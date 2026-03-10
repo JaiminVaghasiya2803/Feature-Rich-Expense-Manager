@@ -1,0 +1,23 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+type NetworkState = {
+  isOnline: boolean;
+};
+
+const initialState: NetworkState = {
+  isOnline: true,
+};
+
+const networkSlice = createSlice({
+  name: 'network',
+  initialState,
+  reducers: {
+    setOnlineStatus: (state, action: PayloadAction<boolean>) => {
+      state.isOnline = action.payload;
+    },
+  },
+});
+
+export const { setOnlineStatus } = networkSlice.actions;
+
+export default networkSlice.reducer;

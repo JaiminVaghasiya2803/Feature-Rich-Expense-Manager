@@ -1,0 +1,149 @@
+{
+  "expenses": [
+    {
+      "id": "1773058714951",
+      "title": "Grocery ",
+      "amount": 540,
+      "category": "other",
+      "date": "2026-03-09T12:18:34.177Z",
+      "updatedAt": "2026-03-09T12:18:34.177Z"
+    },
+    {
+      "id": "1773058964010",
+      "title": "TestT",
+      "amount": 500,
+      "category": "other",
+      "date": "2026-03-09T12:22:43.358Z",
+      "updatedAt": "2026-03-09T12:40:41.049Z"
+    },
+    {
+      "id": "1773058964011",
+      "title": "TestT2",
+      "amount": 5000,
+      "category": "other",
+      "date": "2026-03-09T12:22:43.358Z",
+      "updatedAt": "2026-03-09T12:22:43.358Z"
+    },
+    {
+      "id": "1773058964012",
+      "title": "TestT3",
+      "amount": 5000,
+      "category": "other",
+      "date": "2026-03-09T12:22:43.358Z",
+      "updatedAt": "2026-03-09T12:22:43.358Z"
+    },
+    {
+      "id": "1773058964013",
+      "title": "TestT4",
+      "amount": 5000,
+      "category": "other",
+      "date": "2026-03-09T12:22:43.358Z",
+      "updatedAt": "2026-03-09T12:22:43.358Z"
+    },
+    {
+      "id": "1773058964014",
+      "title": "TestT5",
+      "amount": 5000,
+      "category": "other",
+      "date": "2026-03-09T12:22:43.358Z",
+      "updatedAt": "2026-03-09T12:22:43.358Z"
+    },
+    {
+      "id": "1773058964015",
+      "title": "TestT6",
+      "amount": 5000,
+      "category": "other",
+      "date": "2026-03-09T12:22:43.358Z",
+      "updatedAt": "2026-03-09T12:22:43.358Z"
+    },
+    {
+      "id": "1773058964016",
+      "title": "TestT7",
+      "amount": 5000,
+      "category": "other",
+      "date": "2026-03-09T12:22:43.358Z",
+      "updatedAt": "2026-03-09T12:22:43.358Z"
+    },
+    {
+      "id": "1773058964017",
+      "title": "TestT8",
+      "amount": 5000,
+      "category": "other",
+      "date": "2026-03-09T12:22:43.358Z",
+      "updatedAt": "2026-03-09T12:22:43.358Z"
+    },
+    {
+      "id": "1773058964018",
+      "title": "TestT9",
+      "amount": 5000,
+      "category": "other",
+      "date": "2026-03-09T12:22:43.358Z",
+      "updatedAt": "2026-03-09T12:22:43.358Z"
+    },
+    {
+      "id": "1773058964019",
+      "title": "TestT10",
+      "amount": 5000,
+      "category": "other",
+      "date": "2026-03-09T12:22:43.358Z",
+      "updatedAt": "2026-03-09T12:22:43.358Z"
+    },
+    {
+      "id": "1773058964020",
+      "title": "TestT11",
+      "amount": 5000,
+      "category": "other",
+      "date": "2026-03-09T12:22:43.358Z",
+      "updatedAt": "2026-03-09T12:22:43.358Z"
+    },
+    {
+      "id": "1773058964021",
+      "title": "TestT12",
+      "amount": 5000,
+      "category": "other",
+      "date": "2026-03-09T12:22:43.358Z",
+      "updatedAt": "2026-03-09T12:22:43.358Z"
+    },
+    {
+      "id": "1773059972611",
+      "title": "Y6u5h5",
+      "amount": 66,
+      "category": "other",
+      "date": "2026-03-09T12:39:32.173Z",
+      "updatedAt": "2026-03-09T12:39:32.173Z"
+    },
+    {
+      "id": "1773060091182",
+      "title": "Uyjj",
+      "amount": 66,
+      "category": "other",
+      "date": "2026-03-09T12:41:30.829Z",
+      "updatedAt": "2026-03-09T12:41:30.829Z"
+    },
+    {
+      "id": "1773060138543",
+      "title": "Jujumu",
+      "amount": 366,
+      "category": "other",
+      "date": "2026-03-09T12:42:18.189Z",
+      "updatedAt": "2026-03-09T12:42:18.189Z"
+    },
+    {
+      "id": "1773060156480",
+      "title": "Hent",
+      "amount": 99,
+      "category": "other",
+      "date": "2026-03-09T12:42:35.801Z",
+      "updatedAt": "2026-03-09T12:42:35.801Z"
+    },
+    {
+      "id": 1773060193471,
+      "title": "Googv",
+      "amount": 500,
+      "category": "other",
+      "date": "2026-03-09T12:43:12.785Z",
+      "updatedAt": "2026-03-09T12:43:12.785Z"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

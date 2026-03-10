@@ -1,0 +1,5 @@
+export enum QueueActionType {
+  ADD_EXPENSE = 'ADD_EXPENSE',
+  UPDATE_EXPENSE = 'UPDATE_EXPENSE',
+  DELETE_EXPENSE = 'DELETE_EXPENSE',
+}
