@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { theme } from '../constants/theme';
 
 const SyncIndicator = () => {
   return (
     <View style={styles.container}>
-      <ActivityIndicator size="small" />
+      <ActivityIndicator size="small" color={theme.colors.primary} />
       <Text style={styles.text}>Syncing...</Text>
     </View>
   );
@@ -16,11 +17,15 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 4,
+    backgroundColor: `${theme.colors.primary}10`,
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs,
+    borderRadius: theme.borderRadius.sm,
   },
   text: {
-    marginLeft: 5,
-    fontSize: 12,
-    color: '#555',
+    ...theme.typography.caption,
+    color: theme.colors.primary,
+    marginLeft: theme.spacing.xs,
+    fontWeight: '600',
   },
 });

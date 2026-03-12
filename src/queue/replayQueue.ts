@@ -5,6 +5,7 @@ import {
   setIsReplaying,
 } from './mutationQueue';
 import { addExpense, updateExpense, deleteExpense } from '../api/expense.api';
+import { apiClient } from '../api/client';
 import { QueueActionType } from '../constants/queueTypes';
 
 export const replayQueue = async () => {
@@ -30,6 +31,18 @@ export const replayQueue = async () => {
 
           case QueueActionType.DELETE_EXPENSE:
             await deleteExpense(mutation.payload.id);
+            break;
+
+          case 'CREATE_GROUP':
+            await apiClient.post('/groups', mutation.data);
+            break;
+
+          case 'UPDATE_GROUP':
+            await apiClient.patch(`/groups/${mutation.data.id}`, mutation.data.updates);
+            break;
+
+          case 'DELETE_GROUP':
+            await apiClient.delete(`/groups/${mutation.data.id}`);
             break;
 
           default:

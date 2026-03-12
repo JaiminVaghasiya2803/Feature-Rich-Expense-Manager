@@ -1,22 +1,16 @@
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import NetInfo from '@react-native-community/netinfo';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { initQueue } from './queue/mutationQueue';
 import { store } from './store';
 import { setOnlineStatus } from './store/networkSlice';
 import { replayQueue } from './queue/replayQueue';
 import QueryProvider from './providers/QueryProvider';
-
-import ExpenseListScreen from './screens/ExpenseListScreen';
-import AddExpenseScreen from './screens/AddExpenseScreen';
-import EditExpenseScreen from './screens/EditExpenseScreen';
+import { AppProvider } from './contexts/AppContext';
+import AppContainer from './components/AppContainer';
 import { StatusBar, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-const Stack = createNativeStackNavigator();
 
 const App = () => {
   useEffect(() => {
@@ -48,25 +42,9 @@ const App = () => {
       <Provider store={store}>
         <StatusBar barStyle="dark-content" />
         <QueryProvider>
-          <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
-              <Stack.Screen
-                name="ExpenseList"
-                component={ExpenseListScreen}
-                options={{ title: 'Expense Tracker' }}
-              />
-              <Stack.Screen
-                name="AddExpense"
-                component={AddExpenseScreen}
-                options={{ title: 'Add Expense' }}
-              />
-              <Stack.Screen
-                name="EditExpense"
-                component={EditExpenseScreen}
-                options={{ title: 'Edit Expense' }}
-              />
-            </Stack.Navigator>
-          </NavigationContainer>
+          <AppProvider>
+            <AppContainer />
+          </AppProvider>
         </QueryProvider>
       </Provider>
     </SafeAreaView>
