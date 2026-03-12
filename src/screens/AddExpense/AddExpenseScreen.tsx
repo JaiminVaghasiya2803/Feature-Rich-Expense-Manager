@@ -1,29 +1,36 @@
 import React, { useState, useMemo } from 'react';
 import {
   View,
-  StyleSheet,
   ScrollView,
   Text,
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { FileText, Tag, Users } from 'lucide-react-native';
+import { FileText, Tag, Users, IndianRupee } from 'lucide-react-native';
 
-import { useAddExpense } from '../hooks/useAddExpense';
-import { useGroups } from '../hooks/useGroups';
-import { theme } from '../constants/theme';
-import { ExpenseCategory, ExpenseGroup } from '../types/expense';
-import { EXPENSE_CATEGORIES } from '../constants/categories';
-import Card from '../components/ui/Card';
-import Input from '../components/ui/Input';
-import Button from '../components/ui/Button';
-import DatePicker from '../components/ui/DatePicker';
-import Dropdown from '../components/ui/Dropdown';
-import InrIcon from '../components/ui/InrIcon';
-import Header from '../components/ui/Header';
+import { useAddExpense } from '../../hooks/useAddExpense';
+import { useGroups } from '../../hooks/useGroups';
+import { ExpenseCategory, ExpenseGroup } from '../../types/expense';
+import { EXPENSE_CATEGORIES } from '../../constants/categories';
+import Card from '../../components/ui/Card';
+import Input from '../../components/ui/Input';
+import Button from '../../components/ui/Button';
+import DatePicker from '../../components/ui/DatePicker';
+import Dropdown from '../../components/ui/Dropdown';
+import Header from '../../components/ui/Header';
+import { createUseStyles } from '../../styles/createUseStyles';
+import { getThemeColors } from '../../styles/colors';
+import { useTheme } from '../../contexts/ThemeContext';
+import { getStyles } from './styles';
+
+const useStyles = createUseStyles(getStyles);
 
 const AddExpenseScreen = () => {
+  const { theme } = useTheme();
+  const themeColors = getThemeColors(theme);
+  const styles = useStyles({ theme });
+  
   const navigation = useNavigation();
   const mutation = useAddExpense();
   const { data: groupsData } = useGroups();
@@ -120,14 +127,14 @@ const AddExpenseScreen = () => {
       
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         
-        <Card style={styles.formCard} padding="xl" delay={100}>
+        <Card style={styles.formCard}>
           <Input
             label="Expense Title"
             placeholder="e.g. Groceries, Coffee, Gas"
             value={title}
             onChangeText={handleTitleChange}
             error={errors.title}
-            leftIcon={<FileText size={20} color={theme.colors.text.tertiary} />}
+            leftIcon={<FileText size={20} color={themeColors.textTertiary} />}
           />
 
           <Input
@@ -137,7 +144,7 @@ const AddExpenseScreen = () => {
             value={amount}
             onChangeText={handleAmountChange}
             error={errors.amount}
-            leftIcon={<InrIcon size={20} color={theme.colors.text.tertiary} />}
+            leftIcon={<IndianRupee size={20} color={themeColors.textTertiary} />}
           />
 
           <DatePicker
@@ -152,13 +159,13 @@ const AddExpenseScreen = () => {
             options={categoryOptions}
             value={selectedCategory}
             onSelect={(value) => setSelectedCategory(value as ExpenseCategory)}
-            leftIcon={<Tag size={20} color={theme.colors.text.tertiary} />}
+            leftIcon={<Tag size={20} color={themeColors.textTertiary} />}
           />
 
           {groups.length > 0 && (
             <View style={styles.groupSection}>
               <Text style={styles.sectionLabel}>
-                <Users size={16} color={theme.colors.text.primary} /> Group (Optional)
+                <Users size={16} color={themeColors.textPrimary} /> Group (Optional)
               </Text>
               <View style={styles.groupGrid}>
                 <TouchableOpacity
@@ -169,7 +176,7 @@ const AddExpenseScreen = () => {
                   onPress={() => setSelectedGroupId(undefined)}
                   activeOpacity={0.7}
                 >
-                  <View style={[styles.groupColorIndicator, { backgroundColor: theme.colors.border.medium }]} />
+                  <View style={[styles.groupColorIndicator, { backgroundColor: themeColors.borderMedium }]} />
                   <Text style={[styles.groupText, !selectedGroupId && styles.selectedGroupText]}>
                     No Group
                   </Text>
@@ -214,64 +221,3 @@ const AddExpenseScreen = () => {
 };
 
 export default AddExpenseScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  formCard: {
-    marginHorizontal: theme.spacing.lg,
-    marginBottom: theme.spacing.xl,
-  },
-  groupSection: {
-    marginBottom: theme.spacing.lg,
-  },
-  sectionLabel: {
-    ...theme.typography.bodySmall,
-    fontWeight: '600',
-    color: theme.colors.text.primary,
-    marginBottom: theme.spacing.md,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  groupGrid: {
-    gap: theme.spacing.sm,
-  },
-  groupItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.md,
-    borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border.light,
-    backgroundColor: theme.colors.surface,
-    marginBottom: theme.spacing.sm,
-  },
-  selectedGroup: {
-    borderWidth: 2,
-    borderColor: theme.colors.primary,
-    backgroundColor: `${theme.colors.primary}10`,
-  },
-  groupColorIndicator: {
-    width: 12,
-    height: 12,
-    borderRadius: theme.borderRadius.sm,
-    marginRight: theme.spacing.md,
-  },
-  groupText: {
-    ...theme.typography.body,
-    color: theme.colors.text.primary,
-  },
-  selectedGroupText: {
-    color: theme.colors.primary,
-    fontWeight: '600',
-  },
-  submitButton: {
-    marginTop: theme.spacing.md,
-  },
-});

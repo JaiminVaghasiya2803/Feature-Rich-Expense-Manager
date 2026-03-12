@@ -14,7 +14,8 @@ import {
 } from 'lucide-react-native';
 import { TabConfig } from './BottomTabBar';
 import CustomBottomTabBar from './CustomBottomTabBar';
-import { theme } from '../../constants/theme';
+import { useTheme } from '../../contexts/ThemeContext';
+import { getThemeColors } from '../../styles/colors';
 
 const Tab = createBottomTabNavigator();
 
@@ -46,30 +47,41 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({
   showLabels = true,
   tabBarStyle = 'default',
 }) => {
+  const { theme } = useTheme();
+  const themeColors = getThemeColors(theme);
+  
   const getTabBarStyle = () => {
     switch (tabBarStyle) {
       case 'rounded':
         return {
-          backgroundColor: theme.colors.surface,
+          backgroundColor: themeColors.surface,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
           borderTopWidth: 0,
-          ...theme.shadows.lg,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: theme === 'dark' ? 0.5 : 0.15,
+          shadowRadius: 16,
+          elevation: 8,
         };
       case 'floating':
         return {
-          backgroundColor: theme.colors.surface,
+          backgroundColor: themeColors.surface,
           borderRadius: 25,
           marginHorizontal: 20,
           marginBottom: 20,
           position: 'absolute' as const,
           borderTopWidth: 0,
-          ...theme.shadows.lg,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: theme === 'dark' ? 0.5 : 0.15,
+          shadowRadius: 16,
+          elevation: 8,
         };
       default:
         return {
-          backgroundColor: theme.colors.surface,
-          borderTopColor: theme.colors.border,
+          backgroundColor: themeColors.surface,
+          borderTopColor: themeColors.borderLight,
         };
     }
   };
@@ -92,8 +104,8 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({
           fontSize: 12,
           fontWeight: '500',
         },
-        tabBarActiveTintColor: theme.colors.primary,
-        tabBarInactiveTintColor: theme.colors.text.secondary,
+        tabBarActiveTintColor: themeColors.primary,
+        tabBarInactiveTintColor: themeColors.textSecondary,
       }}
     >
       {tabs.map((tab) => (

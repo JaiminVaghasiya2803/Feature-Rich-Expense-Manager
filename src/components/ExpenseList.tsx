@@ -4,7 +4,8 @@ import { useMutationState } from '@tanstack/react-query';
 import { FileX } from 'lucide-react-native';
 import ExpenseItem from './ExpenseItem';
 import { Expense, ExpenseGroup } from '../types/expense';
-import { theme } from '../constants/theme';
+import { useTheme } from '../contexts/ThemeContext';
+import { getThemeColors } from '../styles/colors';
 
 type Props = {
   expenses: Expense[];
@@ -25,6 +26,9 @@ const ExpenseList: React.FC<Props> = ({
   onEdit,
   onDelete,
 }) => {
+  const { theme } = useTheme();
+  const themeColors = getThemeColors(theme);
+  
   // Track IDs being updated or added
   const pendingMutations = useMutationState({
     filters: { status: 'pending' },
@@ -43,9 +47,9 @@ const ExpenseList: React.FC<Props> = ({
 
   const EmptyState = () => (
     <View style={styles.emptyContainer}>
-      <FileX size={48} color={theme.colors.text.tertiary} />
-      <Text style={styles.emptyTitle}>No expenses yet</Text>
-      <Text style={styles.emptySubtitle}>
+      <FileX size={48} color={themeColors.textTertiary} />
+      <Text style={[styles.emptyTitle, { color: themeColors.textPrimary }]}>No expenses yet</Text>
+      <Text style={[styles.emptySubtitle, { color: themeColors.textSecondary }]}>
         Tap the + button to add your first expense
       </Text>
     </View>
@@ -72,8 +76,8 @@ const ExpenseList: React.FC<Props> = ({
         <RefreshControl 
           refreshing={refreshing} 
           onRefresh={onRefresh}
-          tintColor={theme.colors.primary}
-          colors={[theme.colors.primary]}
+          tintColor={themeColors.primary}
+          colors={[themeColors.primary]}
         />
       }
       onEndReached={onEndReached}
@@ -88,24 +92,23 @@ export default ExpenseList;
 
 const styles = StyleSheet.create({
   listContent: {
-    paddingBottom: theme.spacing.xl,
+    paddingBottom: 32,
   },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: theme.spacing.xl,
-    paddingVertical: theme.spacing.xxl,
+    paddingHorizontal: 32,
+    paddingVertical: 64,
   },
   emptyTitle: {
-    ...theme.typography.h3,
-    color: theme.colors.text.primary,
-    marginTop: theme.spacing.lg,
-    marginBottom: theme.spacing.sm,
+    fontSize: 18,
+    fontWeight: '600',
+    marginTop: 24,
+    marginBottom: 8,
   },
   emptySubtitle: {
-    ...theme.typography.body,
-    color: theme.colors.text.secondary,
+    fontSize: 16,
     textAlign: 'center',
     lineHeight: 24,
   },

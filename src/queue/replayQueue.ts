@@ -34,15 +34,15 @@ export const replayQueue = async () => {
             break;
 
           case 'CREATE_GROUP':
-            await apiClient.post('/groups', mutation.data);
+            await apiClient.post('/groups', mutation.payload);
             break;
 
           case 'UPDATE_GROUP':
-            await apiClient.patch(`/groups/${mutation.data.id}`, mutation.data.updates);
+            await apiClient.patch(`/groups/${mutation.payload.id}`, mutation.payload.updates);
             break;
 
           case 'DELETE_GROUP':
-            await apiClient.delete(`/groups/${mutation.data.id}`);
+            await apiClient.delete(`/groups/${mutation.payload.id}`);
             break;
 
           default:

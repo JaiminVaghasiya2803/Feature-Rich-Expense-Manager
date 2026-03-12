@@ -2,7 +2,8 @@ import React, { memo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { Edit3, Trash2, Calendar, Tag, Users } from 'lucide-react-native';
 import { Expense, ExpenseGroup } from '../types/expense';
-import { theme } from '../constants/theme';
+import { useTheme } from '../contexts/ThemeContext';
+import { getThemeColors } from '../styles/colors';
 import { getCategoryConfig } from '../constants/categories';
 import SyncIndicator from './SyncIndicator';
 import Card from './ui/Card';
@@ -22,6 +23,8 @@ const ExpenseItem: React.FC<Props> = ({
   onEdit,
   onDelete,
 }) => {
+  const { theme } = useTheme();
+  const themeColors = getThemeColors(theme);
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -43,10 +46,10 @@ const ExpenseItem: React.FC<Props> = ({
   const categoryConfig = getCategoryConfig(expense.category);
 
   return (
-    <Card style={styles.container} padding="lg" shadow="sm">
+    <Card style={styles.container} padding={24} shadow="sm">
       <View style={styles.header}>
         <View style={styles.titleSection}>
-          <Text style={styles.title}>{expense.title}</Text>
+          <Text style={[styles.title, { color: themeColors.textPrimary }]}>{expense.title}</Text>
           <View style={styles.metadata}>
             <View style={styles.categoryContainer}>
               <Text style={styles.categoryIcon}>{categoryConfig.icon}</Text>
@@ -58,19 +61,19 @@ const ExpenseItem: React.FC<Props> = ({
             {group && (
               <View style={styles.groupContainer}>
                 <View style={[styles.groupColorIndicator, { backgroundColor: group.color }]} />
-                <Text style={styles.groupName}>{group.name}</Text>
+                <Text style={[styles.groupName, { color: themeColors.textSecondary }]}>{group.name}</Text>
               </View>
             )}
             
             <View style={styles.dateContainer}>
-              <Calendar size={12} color={theme.colors.text.tertiary} />
-              <Text style={styles.date}>{formatDate(expense.date)}</Text>
+              <Calendar size={12} color={themeColors.textTertiary} />
+              <Text style={[styles.date, { color: themeColors.textTertiary }]}>{formatDate(expense.date)}</Text>
             </View>
           </View>
         </View>
 
         <View style={styles.amountSection}>
-          <Text style={styles.amount}>{formatAmount(expense.amount)}</Text>
+          <Text style={[styles.amount, { color: themeColors.textPrimary }]}>{formatAmount(expense.amount)}</Text>
           {isSyncing && (
             <View style={styles.syncContainer}>
               <SyncIndicator />
@@ -79,23 +82,23 @@ const ExpenseItem: React.FC<Props> = ({
         </View>
       </View>
 
-      <View style={styles.actions}>
+      <View style={[styles.actions, { borderTopColor: themeColors.borderLight }]}>
         <TouchableOpacity
-          style={[styles.actionButton, styles.editButton]}
+          style={[styles.actionButton, styles.editButton, { backgroundColor: `${themeColors.primary}15` }]}
           onPress={() => onEdit?.(expense)}
           activeOpacity={0.7}
         >
-          <Edit3 size={16} color={theme.colors.primary} />
-          <Text style={styles.editText}>Edit</Text>
+          <Edit3 size={16} color={themeColors.primary} />
+          <Text style={[styles.editText, { color: themeColors.primary }]}>Edit</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.actionButton, styles.deleteButton]}
+          style={[styles.actionButton, styles.deleteButton, { backgroundColor: `${themeColors.danger}15` }]}
           onPress={() => onDelete?.(expense)}
           activeOpacity={0.7}
         >
-          <Trash2 size={16} color={theme.colors.danger} />
-          <Text style={styles.deleteText}>Delete</Text>
+          <Trash2 size={16} color={themeColors.danger} />
+          <Text style={[styles.deleteText, { color: themeColors.danger }]}>Delete</Text>
         </TouchableOpacity>
       </View>
     </Card>
@@ -106,27 +109,27 @@ export default memo(ExpenseItem);
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: theme.spacing.md,
+    marginBottom: 16,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: theme.spacing.md,
+    marginBottom: 16,
   },
   titleSection: {
     flex: 1,
-    marginRight: theme.spacing.md,
+    marginRight: 16,
   },
   title: {
-    ...theme.typography.h3,
-    color: theme.colors.text.primary,
-    marginBottom: theme.spacing.xs,
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 4,
   },
   metadata: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: theme.spacing.md,
+    gap: 16,
   },
   categoryContainer: {
     flexDirection: 'row',
@@ -134,10 +137,10 @@ const styles = StyleSheet.create({
   },
   categoryIcon: {
     fontSize: 14,
-    marginRight: theme.spacing.xs,
+    marginRight: 4,
   },
   category: {
-    ...theme.typography.caption,
+    fontSize: 12,
     fontWeight: '600',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
@@ -149,12 +152,11 @@ const styles = StyleSheet.create({
   groupColorIndicator: {
     width: 8,
     height: 8,
-    borderRadius: theme.borderRadius.sm,
-    marginRight: theme.spacing.xs,
+    borderRadius: 4,
+    marginRight: 4,
   },
   groupName: {
-    ...theme.typography.caption,
-    color: theme.colors.text.secondary,
+    fontSize: 12,
     fontWeight: '500',
   },
   dateContainer: {
@@ -162,53 +164,43 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   date: {
-    ...theme.typography.caption,
-    color: theme.colors.text.tertiary,
-    marginLeft: theme.spacing.xs,
+    fontSize: 12,
+    marginLeft: 4,
   },
   amountSection: {
     alignItems: 'flex-end',
   },
   amount: {
-    ...theme.typography.h3,
-    color: theme.colors.text.primary,
+    fontSize: 18,
     fontWeight: '700',
   },
   syncContainer: {
-    marginTop: theme.spacing.xs,
+    marginTop: 4,
   },
   actions: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: theme.spacing.sm,
-    paddingTop: theme.spacing.md,
+    gap: 8,
+    paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: theme.colors.border.light,
   },
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
-    borderRadius: theme.borderRadius.sm,
-    backgroundColor: theme.colors.surfaceSecondary,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
   },
-  editButton: {
-    backgroundColor: `${theme.colors.primary}15`,
-  },
-  deleteButton: {
-    backgroundColor: `${theme.colors.danger}15`,
-  },
+  editButton: {},
+  deleteButton: {},
   editText: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.primary,
+    fontSize: 14,
     fontWeight: '600',
-    marginLeft: theme.spacing.xs,
+    marginLeft: 4,
   },
   deleteText: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.danger,
+    fontSize: 14,
     fontWeight: '600',
-    marginLeft: theme.spacing.xs,
+    marginLeft: 4,
   },
 });

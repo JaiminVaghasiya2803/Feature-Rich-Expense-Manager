@@ -8,7 +8,8 @@ import {
   TextStyle,
   Animated,
 } from 'react-native';
-import { theme } from '../../constants/theme';
+import { useTheme } from '../../contexts/ThemeContext';
+import { getThemeColors } from '../../styles/colors';
 import { usePressAnimation } from '../../hooks/useAnimations';
 
 type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
@@ -37,25 +38,114 @@ const Button: React.FC<ButtonProps> = ({
   textStyle,
   animated = true,
 }) => {
+  const { theme } = useTheme();
+  const themeColors = getThemeColors(theme);
   const { pressIn, pressOut, animatedStyle } = usePressAnimation(
     animated && !disabled && !loading
   );
 
-  const buttonStyle = [
-    styles.base,
-    styles[variant],
-    styles[size],
-    disabled && styles.disabled,
-    style,
-  ];
+  const shadowStyles = {
+    sm: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: theme === 'dark' ? 0.3 : 0.05,
+      shadowRadius: 2,
+      elevation: 2,
+    },
+  };
 
-  const buttonTextStyle = [
-    styles.text,
-    styles[`${variant}Text`],
-    styles[`${size}Text`],
-    disabled && styles.disabledText,
-    textStyle,
-  ];
+  const getButtonStyle = () => {
+    const baseStyle = {
+      borderRadius: 12,
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
+      flexDirection: 'row' as const,
+    };
+
+    const variantStyles = {
+      primary: {
+        backgroundColor: themeColors.primary,
+        ...shadowStyles.sm,
+      },
+      secondary: {
+        backgroundColor: themeColors.secondary,
+        ...shadowStyles.sm,
+      },
+      danger: {
+        backgroundColor: themeColors.danger,
+        ...shadowStyles.sm,
+      },
+      ghost: {
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: themeColors.borderMedium,
+      },
+    };
+
+    const sizeStyles = {
+      sm: {
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        minHeight: 36,
+      },
+      md: {
+        paddingHorizontal: 24,
+        paddingVertical: 16,
+        minHeight: 48,
+      },
+      lg: {
+        paddingHorizontal: 32,
+        paddingVertical: 24,
+        minHeight: 56,
+      },
+    };
+
+    const disabledStyle = disabled ? {
+      backgroundColor: themeColors.borderMedium,
+      ...shadowStyles.sm,
+    } : {};
+
+    return [
+      baseStyle,
+      variantStyles[variant],
+      sizeStyles[size],
+      disabledStyle,
+      style,
+    ];
+  };
+
+  const getTextStyle = () => {
+    const baseTextStyle = {
+      fontSize: 16,
+      fontWeight: '600' as const,
+      lineHeight: 24,
+    };
+
+    const variantTextStyles = {
+      primary: { color: themeColors.textInverse },
+      secondary: { color: themeColors.textInverse },
+      danger: { color: themeColors.textInverse },
+      ghost: { color: themeColors.textPrimary },
+    };
+
+    const sizeTextStyles = {
+      sm: { fontSize: 14 },
+      md: { fontSize: 16 },
+      lg: { fontSize: 18 },
+    };
+
+    const disabledTextStyle = disabled ? {
+      color: themeColors.textTertiary,
+    } : {};
+
+    return [
+      baseTextStyle,
+      variantTextStyles[variant],
+      sizeTextStyles[size],
+      disabledTextStyle,
+      textStyle,
+    ];
+  };
 
   return (
     <TouchableOpacity
@@ -67,103 +157,21 @@ const Button: React.FC<ButtonProps> = ({
     >
       <Animated.View
         style={[
-          buttonStyle,
+          getButtonStyle(),
           animated && animatedStyle,
         ]}
       >
         {loading ? (
           <ActivityIndicator
-            color={variant === 'ghost' ? theme.colors.primary : theme.colors.text.inverse}
+            color={variant === 'ghost' ? themeColors.primary : themeColors.textInverse}
             size="small"
           />
         ) : (
-          <Text style={buttonTextStyle}>{title}</Text>
+          <Text style={getTextStyle()}>{title}</Text>
         )}
       </Animated.View>
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  base: {
-    borderRadius: theme.borderRadius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  
-  // Variants
-  primary: {
-    backgroundColor: theme.colors.primary,
-    ...theme.shadows.sm,
-  },
-  secondary: {
-    backgroundColor: theme.colors.secondary,
-    ...theme.shadows.sm,
-  },
-  danger: {
-    backgroundColor: theme.colors.danger,
-    ...theme.shadows.sm,
-  },
-  ghost: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: theme.colors.border.medium,
-  },
-  
-  // Sizes
-  sm: {
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
-    minHeight: 36,
-  },
-  md: {
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.md,
-    minHeight: 48,
-  },
-  lg: {
-    paddingHorizontal: theme.spacing.xl,
-    paddingVertical: theme.spacing.lg,
-    minHeight: 56,
-  },
-  
-  // Text styles
-  text: {
-    ...theme.typography.button,
-  },
-  primaryText: {
-    color: theme.colors.text.inverse,
-  },
-  secondaryText: {
-    color: theme.colors.text.inverse,
-  },
-  dangerText: {
-    color: theme.colors.text.inverse,
-  },
-  ghostText: {
-    color: theme.colors.text.primary,
-  },
-  
-  // Size text
-  smText: {
-    fontSize: 14,
-  },
-  mdText: {
-    fontSize: 16,
-  },
-  lgText: {
-    fontSize: 18,
-  },
-  
-  // States
-  disabled: {
-    backgroundColor: theme.colors.border.medium,
-    ...theme.shadows.sm,
-  },
-  disabledText: {
-    color: theme.colors.text.tertiary,
-  },
-});
 
 export default Button;

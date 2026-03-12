@@ -2,15 +2,22 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { TabConfig } from '../components/navigation/BottomTabBar';
 
-// Expense Manager Screens
-import ExpenseListScreen from '../screens/ExpenseListScreen';
-import AddExpenseScreen from '../screens/AddExpenseScreen';
-import EditExpenseScreen from '../screens/EditExpenseScreen';
-import GroupsScreen from '../screens/GroupsScreen';
-import AddGroupScreen from '../screens/AddGroupScreen';
-import EditGroupScreen from '../screens/EditGroupScreen';
-import AnalysisScreen from '../screens/AnalysisScreen';
-import SplitExpensesScreen from '../screens/SplitExpensesScreen';
+// Import screens from organized structure
+import {
+  ExpenseListScreen,
+  AddExpenseScreen,
+  EditExpenseScreen,
+  GroupsScreen,
+  AddGroupScreen,
+  EditGroupScreen,
+  AnalysisScreen,
+  SplitExpensesScreen,
+  SettingsScreen,
+  BillSplitHomeScreen,
+  CreateGroupScreen,
+  AddBillExpenseScreen,
+  GroupDetailsScreen,
+} from '../screens';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,7 +46,17 @@ const AnalysisStack = () => (
 
 const SplitExpensesStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="SplitExpenses" component={SplitExpensesScreen} />
+    <Stack.Screen name="BillSplitHome" component={BillSplitHomeScreen} />
+    <Stack.Screen name="CreateGroup" component={CreateGroupScreen} />
+    <Stack.Screen name="GroupDetails" component={GroupDetailsScreen} />
+    <Stack.Screen name="AddBillExpense" component={AddBillExpenseScreen} />
+  </Stack.Navigator>
+);
+
+// Settings Stack
+const SettingsStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="Settings" component={SettingsScreen} />
   </Stack.Navigator>
 );
 
@@ -68,6 +85,12 @@ export const expenseManagerConfig: TabConfig[] = [
     component: SplitExpensesStack,
     label: 'Split Bills',
     icon: 'split',
+  },
+  {
+    name: 'Settings',
+    component: SettingsStack,
+    label: 'Settings',
+    icon: 'settings',
   },
 ];
 
@@ -98,6 +121,12 @@ export const ecommerceConfig: TabConfig[] = [
     label: 'Profile',
     icon: 'users',
   },
+  {
+    name: 'Settings',
+    component: SettingsStack,
+    label: 'Settings',
+    icon: 'settings',
+  },
 ];
 
 // Example: Social App Configuration
@@ -127,6 +156,12 @@ export const socialAppConfig: TabConfig[] = [
     label: 'Profile',
     icon: 'users',
   },
+  {
+    name: 'Settings',
+    component: SettingsStack,
+    label: 'Settings',
+    icon: 'settings',
+  },
 ];
 
 // Example: Productivity App Configuration
@@ -152,7 +187,7 @@ export const productivityConfig: TabConfig[] = [
   },
   {
     name: 'Settings',
-    component: SplitExpensesScreen, // Placeholder
+    component: SettingsStack,
     label: 'Settings',
     icon: 'settings',
   },

@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, ViewStyle, Animated } from 'react-native';
-import { theme } from '../../constants/theme';
+import { useTheme } from '../../contexts/ThemeContext';
+import { getThemeColors } from '../../styles/colors';
 import { useEntranceAnimation } from '../../hooks/useAnimations';
 
 interface CardProps {
   children: React.ReactNode;
   style?: ViewStyle;
-  padding?: keyof typeof theme.spacing;
-  shadow?: keyof typeof theme.shadows;
+  padding?: number;
+  shadow?: 'sm' | 'md' | 'lg';
   animated?: boolean;
   delay?: number;
 }
@@ -15,21 +16,51 @@ interface CardProps {
 const Card: React.FC<CardProps> = ({
   children,
   style,
-  padding = 'md',
+  padding = 16,
   shadow = 'sm',
   animated = true,
   delay = 0,
 }) => {
+  const { theme } = useTheme();
+  const themeColors = getThemeColors(theme);
   const { startAnimation, animatedStyle } = useEntranceAnimation(animated, delay);
 
   useEffect(() => {
     startAnimation();
   }, [startAnimation]);
 
+  const shadowStyles = {
+    sm: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: theme === 'dark' ? 0.3 : 0.05,
+      shadowRadius: 2,
+      elevation: 2,
+    },
+    md: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: theme === 'dark' ? 0.4 : 0.1,
+      shadowRadius: 8,
+      elevation: 4,
+    },
+    lg: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: theme === 'dark' ? 0.5 : 0.15,
+      shadowRadius: 16,
+      elevation: 8,
+    },
+  };
+
   const cardStyle = [
     styles.card,
-    { padding: theme.spacing[padding] },
-    theme.shadows[shadow],
+    {
+      backgroundColor: themeColors.surface,
+      borderColor: themeColors.borderLight,
+      padding: padding,
+    },
+    shadowStyles[shadow],
     style,
   ];
 
@@ -51,10 +82,8 @@ const Card: React.FC<CardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.md,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: theme.colors.border.light,
   },
 });
 

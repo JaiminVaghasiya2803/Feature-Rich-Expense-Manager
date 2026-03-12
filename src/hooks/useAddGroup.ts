@@ -1,53 +1,32 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
 import { apiClient } from '../api/client';
 import { ExpenseGroup } from '../types/expense';
-import { RootState } from '../store';
-import { enqueueMutation } from '../queue/mutationQueue';
 
 export const useAddGroup = () => {
   const queryClient = useQueryClient();
-  const isOnline = useSelector((state: RootState) => state.network.isOnline);
 
   return useMutation({
-    mutationFn: async (group: Omit<ExpenseGroup, 'id'> & { id: number }) => {
-      if (!isOnline) {
-        await enqueueMutation({
-          type: 'CREATE_GROUP',
-          payload: group,
-        });
-        return group;
-      }
-
-      const response = await apiClient.post<ExpenseGroup>('/groups', group);
-      return response.data;
-    },
-    onMutate: async (newGroup) => {
-      await queryClient.cancelQueries({ queryKey: ['groups'] });
-
-      const previousGroups = queryClient.getQueryData(['groups']);
-
-      queryClient.setQueryData(['groups'], (old: any) => {
-        if (!old) return { pages: [[newGroup]], pageParams: [1] };
-        
-        const newPages = [...old.pages];
-        newPages[0] = [newGroup, ...newPages[0]];
-        
-        return {
-          ...old,
-          pages: newPages,
-        };
-      });
-
-      return { previousGroups };
-    },
-    onError: (err, newGroup, context) => {
-      if (context?.previousGroups) {
-        queryClient.setQueryData(['groups'], context.previousGroups);
+    mutationFn: async (group: Omit<ExpenseGroup, 'id'> & { id: number | string }) => {
+      console.log('📊 Group data received in hook:', group);
+      console.log('🚀 Making API call to create group...');
+      console.log('🔗 API URL:', `${apiClient.defaults.baseURL}/groups`);
+      
+      try {
+        const response = await apiClient.post<ExpenseGroup>('/groups', group);
+        console.log('✅ API Response:', response.data);
+        return response.data;
+      } catch (error) {
+        console.error('❌ API Error in useAddGroup:', error);
+        throw error;
       }
     },
-    onSettled: () => {
+    onSuccess: () => {
+      console.log('✅ Mutation successful, invalidating queries');
+      // Simply invalidate and refetch instead of optimistic updates
       queryClient.invalidateQueries({ queryKey: ['groups'] });
+    },
+    onError: (error) => {
+      console.error('❌ Mutation failed:', error);
     },
   });
 };

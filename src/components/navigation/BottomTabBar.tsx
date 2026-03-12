@@ -12,7 +12,8 @@ import {
   Calendar,
   MessageCircle
 } from 'lucide-react-native';
-import { theme } from '../../constants/theme';
+import { useTheme } from '../../contexts/ThemeContext';
+import { getThemeColors } from '../../styles/colors';
 
 const Tab = createBottomTabNavigator();
 
@@ -49,9 +50,12 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({
   tabs,
   initialRouteName,
   tabBarStyle,
-  activeTintColor = theme.colors.primary,
-  inactiveTintColor = theme.colors.text.secondary,
+  activeTintColor,
+  inactiveTintColor,
 }) => {
+  const { theme } = useTheme();
+  const themeColors = getThemeColors(theme);
+  
   return (
     <Tab.Navigator
       initialRouteName={initialRouteName}
@@ -62,11 +66,11 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({
           const IconComponent = tab ? iconMap[tab.icon] : Calculator;
           return <IconComponent size={size} color={color} />;
         },
-        tabBarActiveTintColor: activeTintColor,
-        tabBarInactiveTintColor: inactiveTintColor,
+        tabBarActiveTintColor: activeTintColor || themeColors.primary,
+        tabBarInactiveTintColor: inactiveTintColor || themeColors.textSecondary,
         tabBarStyle: {
-          backgroundColor: theme.colors.surface,
-          borderTopColor: theme.colors.border,
+          backgroundColor: themeColors.surface,
+          borderTopColor: themeColors.borderLight,
           paddingBottom: 8,
           paddingTop: 8,
           height: 70,

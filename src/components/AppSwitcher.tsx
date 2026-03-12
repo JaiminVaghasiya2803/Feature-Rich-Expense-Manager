@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import { Calculator, Receipt, Users, TrendingUp } from 'lucide-react-native';
-import { theme } from '../constants/theme';
+import { Calculator, Receipt } from 'lucide-react-native';
+import { useTheme } from '../contexts/ThemeContext';
+import { getThemeColors } from '../styles/colors';
 import Card from './ui/Card';
 
 export type AppType = 'expense-manager' | 'split-expenses';
@@ -23,13 +24,16 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
   onAppSelect,
   onClose,
 }) => {
+  const { theme } = useTheme();
+  const themeColors = getThemeColors(theme);
+  
   const apps = [
     {
       id: 'expense-manager' as AppType,
       title: 'Expense Manager',
       description: 'Track your personal expenses and manage budgets',
       icon: Receipt,
-      color: theme.colors.primary,
+      color: themeColors.primary,
       features: ['Personal tracking', 'Categories', 'Analytics', 'Groups'],
     },
     {
@@ -37,7 +41,7 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
       title: 'Split Expenses',
       description: 'Split bills and expenses with friends and family',
       icon: Calculator,
-      color: theme.colors.secondary,
+      color: themeColors.secondary,
       features: ['Bill splitting', 'Group expenses', 'Settlement', 'Balances'],
     },
   ];
@@ -50,8 +54,8 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Choose App</Text>
-        <Text style={styles.subtitle}>Switch between expense tracking modes</Text>
+        <Text style={[styles.title, { color: themeColors.textPrimary }]}>Choose App</Text>
+        <Text style={[styles.subtitle, { color: themeColors.textSecondary }]}>Switch between expense tracking modes</Text>
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -64,9 +68,9 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
               key={app.id}
               style={[
                 styles.appCard,
-                isSelected && styles.selectedCard,
+                isSelected && [styles.selectedCard, { borderColor: themeColors.primary, backgroundColor: `${themeColors.primary}05` }],
               ]}
-              padding="lg"
+              padding={24}
               delay={index * 100}
             >
               <TouchableOpacity
@@ -80,26 +84,26 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
                   </View>
                   
                   <View style={styles.appInfo}>
-                    <Text style={[styles.appTitle, isSelected && { color: app.color }]}>
+                    <Text style={[styles.appTitle, { color: themeColors.textPrimary }, isSelected && { color: app.color }]}>
                       {app.title}
                     </Text>
-                    <Text style={styles.appDescription}>{app.description}</Text>
+                    <Text style={[styles.appDescription, { color: themeColors.textSecondary }]}>{app.description}</Text>
                   </View>
                   
                   {isSelected && (
                     <View style={[styles.selectedIndicator, { backgroundColor: app.color }]}>
-                      <Text style={styles.selectedText}>Active</Text>
+                      <Text style={[styles.selectedText, { color: themeColors.textInverse }]}>Active</Text>
                     </View>
                   )}
                 </View>
 
                 <View style={styles.featuresContainer}>
-                  <Text style={styles.featuresTitle}>Features:</Text>
+                  <Text style={[styles.featuresTitle, { color: themeColors.textPrimary }]}>Features:</Text>
                   <View style={styles.featuresList}>
                     {app.features.map((feature, featureIndex) => (
                       <View key={featureIndex} style={styles.featureItem}>
                         <View style={[styles.featureDot, { backgroundColor: app.color }]} />
-                        <Text style={styles.featureText}>{feature}</Text>
+                        <Text style={[styles.featureText, { color: themeColors.textSecondary }]}>{feature}</Text>
                       </View>
                     ))}
                   </View>
@@ -110,8 +114,8 @@ const AppSwitcher: React.FC<AppSwitcherProps> = ({
         })}
       </ScrollView>
 
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
+      <View style={[styles.footer, { borderTopColor: themeColors.borderLight }]}>
+        <Text style={[styles.footerText, { color: themeColors.textTertiary }]}>
           Your data is kept separate between apps
         </Text>
       </View>
@@ -124,109 +128,99 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    marginBottom: theme.spacing.xl,
+    marginBottom: 32,
   },
   title: {
-    ...theme.typography.h2,
-    color: theme.colors.text.primary,
-    marginBottom: theme.spacing.xs,
+    fontSize: 24,
+    fontWeight: '600',
+    marginBottom: 4,
   },
   subtitle: {
-    ...theme.typography.body,
-    color: theme.colors.text.secondary,
+    fontSize: 16,
   },
   scrollView: {
     flex: 1,
   },
   appCard: {
-    marginBottom: theme.spacing.lg,
+    marginBottom: 24,
     borderWidth: 2,
     borderColor: 'transparent',
   },
-  selectedCard: {
-    borderColor: theme.colors.primary,
-    backgroundColor: `${theme.colors.primary}05`,
-  },
+  selectedCard: {},
   appContent: {
     flex: 1,
   },
   appHeader: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: theme.spacing.lg,
+    marginBottom: 24,
   },
   iconContainer: {
     width: 60,
     height: 60,
-    borderRadius: theme.borderRadius.lg,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: theme.spacing.md,
+    marginRight: 16,
   },
   appInfo: {
     flex: 1,
   },
   appTitle: {
-    ...theme.typography.h3,
-    color: theme.colors.text.primary,
-    marginBottom: theme.spacing.xs,
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 4,
   },
   appDescription: {
-    ...theme.typography.body,
-    color: theme.colors.text.secondary,
+    fontSize: 16,
     lineHeight: 22,
   },
   selectedIndicator: {
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
-    borderRadius: theme.borderRadius.md,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
   },
   selectedText: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.text.inverse,
+    fontSize: 14,
     fontWeight: '600',
   },
   featuresContainer: {
-    marginTop: theme.spacing.md,
+    marginTop: 16,
   },
   featuresTitle: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.text.primary,
+    fontSize: 14,
     fontWeight: '600',
-    marginBottom: theme.spacing.sm,
+    marginBottom: 8,
   },
   featuresList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: theme.spacing.md,
+    gap: 16,
   },
   featureItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: theme.spacing.xs,
+    marginBottom: 4,
   },
   featureDot: {
     width: 6,
     height: 6,
     borderRadius: 3,
-    marginRight: theme.spacing.sm,
+    marginRight: 8,
   },
   featureText: {
-    ...theme.typography.caption,
-    color: theme.colors.text.secondary,
+    fontSize: 12,
   },
   footer: {
-    marginTop: theme.spacing.lg,
-    paddingTop: theme.spacing.lg,
+    marginTop: 24,
+    paddingTop: 24,
     borderTopWidth: 1,
-    borderTopColor: theme.colors.border.light,
     alignItems: 'center',
   },
   footerText: {
-    ...theme.typography.caption,
-    color: theme.colors.text.tertiary,
+    fontSize: 12,
     textAlign: 'center',
   },
 });

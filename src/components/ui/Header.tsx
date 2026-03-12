@@ -1,38 +1,8 @@
-/**
- * Reusable Header component for screens with animations and proper styling
- * 
- * @example
- * // Basic usage with back button
- * <Header 
- *   title="Screen Title" 
- *   subtitle="Optional subtitle"
- *   onBack={() => navigation.goBack()} 
- * />
- * 
- * @example
- * // With right component
- * <Header 
- *   title="Screen Title"
- *   onBack={() => navigation.goBack()}
- *   rightComponent={
- *     <TouchableOpacity onPress={handleAction}>
- *       <Icon name="settings" />
- *     </TouchableOpacity>
- *   }
- * />
- * 
- * @example
- * // Without back button (main screen)
- * <Header 
- *   title="Main Screen"
- *   showBackButton={false}
- * />
- */
-
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ViewStyle, Animated, InteractionManager } from 'react-native';
 import { ArrowLeft } from 'lucide-react-native';
-import { theme } from '../../constants/theme';
+import { useTheme } from '../../contexts/ThemeContext';
+import { getThemeColors } from '../../styles/colors';
 
 interface HeaderProps {
   title: string;
@@ -52,9 +22,11 @@ const Header: React.FC<HeaderProps> = ({
   rightComponent,
   showBackButton = true,
   style,
-  backgroundColor = theme.colors.surface,
+  backgroundColor,
   animated = true,
 }) => {
+  const { theme } = useTheme();
+  const themeColors = getThemeColors(theme);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(-20)).current;
   const scaleAnim = useRef(new Animated.Value(0.95)).current;
@@ -87,11 +59,43 @@ const Header: React.FC<HeaderProps> = ({
     }
   }, [animated, fadeAnim, slideAnim, scaleAnim]);
 
+  const getHeaderStyle = () => ({
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    borderBottomWidth: 1,
+    borderBottomColor: themeColors.borderLight,
+    backgroundColor: backgroundColor || themeColors.surface,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: theme === 'dark' ? 0.3 : 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+  });
+
+  const getTextStyles = () => ({
+    title: {
+      fontSize: 24,
+      fontWeight: '600' as const,
+      lineHeight: 32,
+      color: themeColors.textPrimary,
+      marginBottom: 4,
+    },
+    subtitle: {
+      fontSize: 16,
+      fontWeight: '400' as const,
+      lineHeight: 24,
+      color: themeColors.textSecondary,
+    },
+  });
+
+  const textStyles = getTextStyles();
+
   return (
     <Animated.View 
       style={[
-        styles.header, 
-        { backgroundColor }, 
+        getHeaderStyle(),
         style,
         animated && {
           opacity: fadeAnim,
@@ -113,11 +117,11 @@ const Header: React.FC<HeaderProps> = ({
           ]}
         >
           <TouchableOpacity
-            style={styles.backButton}
+            style={[styles.backButton, { backgroundColor: themeColors.surfaceSecondary }]}
             onPress={onBack}
             activeOpacity={0.7}
           >
-            <ArrowLeft size={24} color={theme.colors.text.primary} />
+            <ArrowLeft size={24} color={themeColors.textPrimary} />
           </TouchableOpacity>
         </Animated.View>
       )}
@@ -131,8 +135,8 @@ const Header: React.FC<HeaderProps> = ({
           },
         ]}
       >
-        <Text style={styles.title}>{title}</Text>
-        {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+        <Text style={textStyles.title}>{title}</Text>
+        {subtitle && <Text style={textStyles.subtitle}>{subtitle}</Text>}
       </Animated.View>
       
       {rightComponent && (
@@ -153,38 +157,23 @@ const Header: React.FC<HeaderProps> = ({
 };
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.border.light,
-    ...theme.shadows.sm,
-  },
   backButtonContainer: {
-    marginRight: theme.spacing.md,
+    marginRight: 16,
   },
   backButton: {
-    padding: theme.spacing.sm,
-    borderRadius: theme.borderRadius.md,
-    backgroundColor: theme.colors.surfaceSecondary,
-    ...theme.shadows.sm,
+    padding: 8,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
   },
   headerContent: {
     flex: 1,
   },
-  title: {
-    ...theme.typography.h2,
-    color: theme.colors.text.primary,
-    marginBottom: theme.spacing.xs,
-  },
-  subtitle: {
-    ...theme.typography.body,
-    color: theme.colors.text.secondary,
-  },
   rightComponent: {
-    marginLeft: theme.spacing.md,
+    marginLeft: 16,
   },
 });
 

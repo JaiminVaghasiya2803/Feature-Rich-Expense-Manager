@@ -13,7 +13,7 @@ export type ExpenseCategory =
   | 'other';
 
 export type ExpenseGroup = {
-  id: number;
+  id: number | string;
   name: string;
   description?: string;
   color: string;

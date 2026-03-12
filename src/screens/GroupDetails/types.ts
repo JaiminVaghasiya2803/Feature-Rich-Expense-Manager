@@ -1,0 +1,80 @@
+import { ViewStyle, TextStyle } from 'react-native';
+import { ColorSchemeName } from 'react-native';
+import { BillGroup } from '../../types/billSplit';
+
+export namespace GroupDetailsProps {
+  export type GroupDetailsStyles = {
+    container: ViewStyle;
+    header: ViewStyle;
+    headerInfo: ViewStyle;
+    headerTitle: TextStyle;
+    headerSubtitle: TextStyle;
+    groupSummary: ViewStyle;
+    summaryCard: ViewStyle;
+    summaryStats: ViewStyle;
+    summaryItem: ViewStyle;
+    summaryValue: TextStyle;
+    summaryLabel: TextStyle;
+    tabs: ViewStyle;
+    tabButton: ViewStyle;
+    activeTab: ViewStyle;
+    tabText: TextStyle;
+    activeTabText: TextStyle;
+    content: ViewStyle;
+    expensesList: ViewStyle;
+    expenseItem: ViewStyle;
+    expenseHeader: ViewStyle;
+    expenseInfo: ViewStyle;
+    expenseTitle: TextStyle;
+    expenseDescription: TextStyle;
+    expenseDetails: ViewStyle;
+    expenseDate: TextStyle;
+    expenseSeparator: TextStyle;
+    expensePaidBy: TextStyle;
+    expenseAmount: ViewStyle;
+    expenseAmountText: TextStyle;
+    expenseSplitType: TextStyle;
+    expenseSplit: ViewStyle;
+    splitPersonItem: ViewStyle;
+    splitPersonAvatar: ViewStyle;
+    splitPersonInitial: TextStyle;
+    splitPersonAmount: TextStyle;
+    balancesCard: ViewStyle;
+    balanceItem: ViewStyle;
+    balancePersonInfo: ViewStyle;
+    balanceAvatar: ViewStyle;
+    balanceInitial: TextStyle;
+    balanceName: TextStyle;
+    balanceAmount: ViewStyle;
+    balanceAmountText: TextStyle;
+    balanceStatus: TextStyle;
+    settleContent: ViewStyle;
+    settlementItem: ViewStyle;
+    settlementInfo: ViewStyle;
+    settlementPersons: ViewStyle;
+    settlementAvatar: ViewStyle;
+    settlementInitial: TextStyle;
+    settlementArrow: TextStyle;
+    settlementText: TextStyle;
+    settlementAmount: TextStyle;
+    emptyState: ViewStyle;
+    emptyTitle: TextStyle;
+    emptySubtitle: TextStyle;
+    addButton: ViewStyle;
+    footer: ViewStyle;
+    addExpenseButton: ViewStyle;
+  };
+
+  export type GroupDetailsContext = {
+    theme: ColorSchemeName;
+  };
+}
+
+export interface GroupDetailsScreenProps {
+  navigation: any;
+  route: {
+    params: {
+      group: BillGroup;
+    };
+  };
+}

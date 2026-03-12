@@ -1,24 +1,38 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { api } from '../api/client';
+import { useQuery } from '@tanstack/react-query';
+import { apiClient } from '../api/client';
 import { ExpenseGroup } from '../types/expense';
 
 export const useGroups = () => {
-  return useInfiniteQuery({
+  return useQuery({
     queryKey: ['groups'],
-    queryFn: async ({ pageParam = 1 }) => {
-      const response = await api.get<ExpenseGroup[]>('/groups', {
-        params: {
-          _page: pageParam,
-          _limit: 20,
-          _sort: 'updatedAt',
-          _order: 'desc',
-        },
-      });
-      return response.data;
+    queryFn: async () => {
+      console.log('🔍 Fetching groups...');
+      console.log('🌐 API Base URL:', apiClient.defaults.baseURL);
+      
+      try {
+        const response = await apiClient.get<ExpenseGroup[]>('/groups');
+        console.log('📊 Groups API response status:', response.status);
+        console.log('📊 Groups API response data:', response.data);
+        
+        if (Array.isArray(response.data)) {
+          console.log('✅ Successfully fetched', response.data.length, 'groups');
+          return response.data;
+        } else {
+          console.warn('⚠️ Unexpected response format:', response.data);
+          return [];
+        }
+      } catch (error) {
+        console.error('❌ Error fetching groups:', error);
+        if (error && typeof error === 'object' && 'response' in error) {
+          console.error('❌ Response error:', error.response);
+        }
+        if (error && typeof error === 'object' && 'code' in error) {
+          console.error('❌ Error code:', error.code);
+        }
+        throw error;
+      }
     },
-    getNextPageParam: (lastPage, pages) => {
-      return lastPage.length === 20 ? pages.length + 1 : undefined;
-    },
-    initialPageParam: 1,
+    retry: 3,
+    retryDelay: 1000,
   });
 };

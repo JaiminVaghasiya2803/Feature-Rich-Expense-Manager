@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -7,25 +7,34 @@ import {
 import { useSelector } from 'react-redux';
 import { Plus, TrendingUp, Calendar, Wallet, Users, ArrowUp, ArrowDown, BarChart3 } from 'lucide-react-native';
 
-import ExpenseList from '../components/ExpenseList';
-import OfflineBanner from '../components/OfflineBanner';
-import Card from '../components/ui/Card';
-import SortDropdown from '../components/ui/SortDropdown';
+import ExpenseList from '../../components/ExpenseList';
+import OfflineBanner from '../../components/OfflineBanner';
+import Card from '../../components/ui/Card';
+import SortDropdown from '../../components/ui/SortDropdown';
 
-import { useExpenses } from '../hooks/useExpenses';
-import { useDeleteExpense } from '../hooks/useDeleteExpense';
-import { useGroups } from '../hooks/useGroups';
+import { useExpenses } from '../../hooks/useExpenses';
+import { useDeleteExpense } from '../../hooks/useDeleteExpense';
+import { useGroups } from '../../hooks/useGroups';
 
-import { calculateTotal } from '../utils/calculateTotal';
-import { flattenExpenses } from '../utils/flattenExpenses';
+import { calculateTotal } from '../../utils/calculateTotal';
+import { flattenExpenses } from '../../utils/flattenExpenses';
 
-import { RootState } from '../store';
-import { Expense, ExpenseGroup } from '../types/expense';
-import { theme } from '../constants/theme';
+import { RootState } from '../../store';
+import { Expense, ExpenseGroup } from '../../types/expense';
+import { createUseStyles } from '../../styles/createUseStyles';
+import { getThemeColors } from '../../styles/colors';
+import { useTheme } from '../../contexts/ThemeContext';
 
 import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { getStyles } from './styles';
+
+const useStyles = createUseStyles(getStyles);
 
 const ExpenseListScreen = () => {
+  const { theme } = useTheme();
+  const themeColors = getThemeColors(theme);
+  const styles = useStyles({ theme });
+  
   const navigation = useNavigation<NavigationProp<any>>();
   const insets = useSafeAreaInsets();
   
@@ -54,24 +63,24 @@ const ExpenseListScreen = () => {
     {
       id: 'date-desc',
       label: 'Date: Newest First',
-      icon: <ArrowDown size={16} color={theme.colors.text.secondary} />,
+      icon: <ArrowDown size={16} color={themeColors.textSecondary} />,
     },
     {
       id: 'date-asc',
       label: 'Date: Oldest First',
-      icon: <ArrowUp size={16} color={theme.colors.text.secondary} />,
+      icon: <ArrowUp size={16} color={themeColors.textSecondary} />,
     },
     {
       id: 'amount-desc',
       label: 'Amount: High to Low',
-      icon: <ArrowDown size={16} color={theme.colors.text.secondary} />,
+      icon: <ArrowDown size={16} color={themeColors.textSecondary} />,
     },
     {
       id: 'amount-asc',
       label: 'Amount: Low to High',
-      icon: <ArrowUp size={16} color={theme.colors.text.secondary} />,
+      icon: <ArrowUp size={16} color={themeColors.textSecondary} />,
     },
-  ], []);
+  ], [themeColors.textSecondary]);
 
   // Sorted expenses
   const sortedExpenses = useMemo(() => {
@@ -92,7 +101,7 @@ const ExpenseListScreen = () => {
   }, [expenses, sortBy]);
 
   const groups: ExpenseGroup[] = useMemo(() => {
-    return groupsData?.pages.flat() ?? [];
+    return groupsData?.pages?.check.flat() ?? [];
   }, [groupsData]);
 
   const totalSpent = useMemo(() => calculateTotal(sortedExpenses), [sortedExpenses]);
@@ -151,7 +160,7 @@ const ExpenseListScreen = () => {
                 onPress={() => navigation.navigate('Analysis')}
                 activeOpacity={0.7}
               >
-                <BarChart3 size={20} color={theme.colors.secondary} />
+                <BarChart3 size={20} color={themeColors.secondary} />
                 <Text style={styles.analysisButtonText}>Analysis</Text>
               </TouchableOpacity>
               
@@ -160,7 +169,7 @@ const ExpenseListScreen = () => {
                 onPress={() => navigation.navigate('Groups')}
                 activeOpacity={0.7}
               >
-                <Users size={20} color={theme.colors.primary} />
+                <Users size={20} color={themeColors.primary} />
                 <Text style={styles.groupsButtonText}>Groups</Text>
               </TouchableOpacity>
             </View>
@@ -169,17 +178,17 @@ const ExpenseListScreen = () => {
 
         {/* Stats Cards */}
         <View style={styles.statsContainer}>
-          <Card style={styles.statCard} padding="lg">
+          <Card style={styles.statCard}>
             <View style={styles.statHeader}>
-              <Wallet size={24} color={theme.colors.primary} />
+              <Wallet size={24} color={themeColors.primary} />
               <Text style={styles.statLabel}>Total Spent</Text>
             </View>
             <Text style={styles.statValue}>{formatCurrency(totalSpent)}</Text>
           </Card>
 
-          <Card style={styles.statCard} padding="lg">
+          <Card style={styles.statCard}>
             <View style={styles.statHeader}>
-              <Calendar size={24} color={theme.colors.secondary} />
+              <Calendar size={24} color={themeColors.secondary} />
               <Text style={styles.statLabel}>This Month</Text>
             </View>
             <Text style={styles.statValue}>{formatCurrency(thisMonthTotal)}</Text>
@@ -193,7 +202,7 @@ const ExpenseListScreen = () => {
             <View style={styles.listTitleContainer}>
               <Text style={styles.listTitle}>Recent Expenses</Text>
               <View style={styles.expenseCount}>
-                <TrendingUp size={16} color={theme.colors.text.secondary} />
+                <TrendingUp size={16} color={themeColors.textSecondary} />
                 <Text style={styles.countText}>{sortedExpenses.length} expenses</Text>
               </View>
             </View>
@@ -225,148 +234,10 @@ const ExpenseListScreen = () => {
         activeOpacity={0.8}
         onPress={() => navigation.navigate('AddExpense')}
       >
-        <Plus color={theme.colors.text.inverse} size={28} strokeWidth={2.5} />
+        <Plus color={themeColors.textInverse} size={28} strokeWidth={2.5} />
       </TouchableOpacity>
     </View>
   );
 };
 
 export default ExpenseListScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 100, // Space for FAB
-  },
-  header: {
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.xl,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  headerLeft: {
-    flex: 1,
-  },
-  headerButtons: {
-    flexDirection: 'row',
-    gap: theme.spacing.sm,
-  },
-  analysisButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
-    backgroundColor: `${theme.colors.secondary}15`,
-    borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: `${theme.colors.secondary}30`,
-  },
-  analysisButtonText: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.secondary,
-    fontWeight: '600',
-    marginLeft: theme.spacing.xs,
-  },
-  groupsButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
-    backgroundColor: `${theme.colors.primary}15`,
-    borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: `${theme.colors.primary}30`,
-  },
-  groupsButtonText: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.primary,
-    fontWeight: '600',
-    marginLeft: theme.spacing.xs,
-  },
-  greeting: {
-    ...theme.typography.h1,
-    color: theme.colors.text.primary,
-    marginBottom: theme.spacing.xs,
-  },
-  subtitle: {
-    ...theme.typography.body,
-    color: theme.colors.text.secondary,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: theme.spacing.lg,
-    gap: theme.spacing.md,
-    marginBottom: theme.spacing.xl,
-  },
-  statCard: {
-    flex: 1,
-  },
-  statHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: theme.spacing.md,
-  },
-  statLabel: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.text.secondary,
-    marginLeft: theme.spacing.sm,
-    fontWeight: '600',
-  },
-  statValue: {
-    ...theme.typography.h2,
-    color: theme.colors.text.primary,
-    fontWeight: '700',
-  },
-  statSubtext: {
-    ...theme.typography.caption,
-    color: theme.colors.text.tertiary,
-    marginTop: theme.spacing.xs,
-  },
-  listContainer: {
-    paddingHorizontal: theme.spacing.lg,
-  },
-  listHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: theme.spacing.lg,
-  },
-  listTitleContainer: {
-    flex: 1,
-  },
-  listTitle: {
-    ...theme.typography.h3,
-    color: theme.colors.text.primary,
-    marginBottom: theme.spacing.xs,
-  },
-  expenseCount: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  countText: {
-    ...theme.typography.caption,
-    color: theme.colors.text.secondary,
-    marginLeft: theme.spacing.xs,
-    fontWeight: '600',
-  },
-  fab: {
-    position: 'absolute',
-    right: theme.spacing.lg,
-    backgroundColor: theme.colors.primary,
-    width: 64,
-    height: 64,
-    borderRadius: theme.borderRadius.full,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...theme.shadows.lg,
-  },
-});

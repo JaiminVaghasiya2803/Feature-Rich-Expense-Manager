@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { WifiOff, Clock } from 'lucide-react-native';
-import { theme } from '../constants/theme';
+import { useTheme } from '../contexts/ThemeContext';
+import { getThemeColors } from '../styles/colors';
 
 type Props = {
   isOffline: boolean;
@@ -9,17 +10,20 @@ type Props = {
 };
 
 const OfflineBanner: React.FC<Props> = ({ isOffline, pendingActions }) => {
+  const { theme } = useTheme();
+  const themeColors = getThemeColors(theme);
+  
   if (!isOffline) return null;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: themeColors.warning + '20', borderBottomColor: themeColors.warning }]}>
       <View style={styles.content}>
-        <WifiOff size={16} color={theme.colors.warning} />
-        <Text style={styles.text}>Offline Mode</Text>
+        <WifiOff size={16} color={themeColors.warning} />
+        <Text style={[styles.text, { color: themeColors.textPrimary }]}>Offline Mode</Text>
         {pendingActions > 0 && (
-          <View style={styles.pendingContainer}>
-            <Clock size={14} color={theme.colors.text.secondary} />
-            <Text style={styles.pendingText}>
+          <View style={[styles.pendingContainer, { borderLeftColor: themeColors.warning }]}>
+            <Clock size={14} color={themeColors.textSecondary} />
+            <Text style={[styles.pendingText, { color: themeColors.textSecondary }]}>
               {pendingActions} pending sync{pendingActions !== 1 ? 's' : ''}
             </Text>
           </View>
@@ -33,11 +37,9 @@ export default OfflineBanner;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: theme.colors.warningLight,
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.md,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: theme.colors.warning,
   },
   content: {
     flexDirection: 'row',
@@ -45,23 +47,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
-    ...theme.typography.bodySmall,
+    fontSize: 14,
     fontWeight: '600',
-    color: theme.colors.text.primary,
-    marginLeft: theme.spacing.sm,
+    marginLeft: 8,
   },
   pendingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: theme.spacing.md,
-    paddingLeft: theme.spacing.md,
+    marginLeft: 16,
+    paddingLeft: 16,
     borderLeftWidth: 1,
-    borderLeftColor: theme.colors.warning,
   },
   pendingText: {
-    ...theme.typography.caption,
-    color: theme.colors.text.secondary,
-    marginLeft: theme.spacing.xs,
+    fontSize: 12,
+    marginLeft: 4,
     fontWeight: '500',
   },
 });

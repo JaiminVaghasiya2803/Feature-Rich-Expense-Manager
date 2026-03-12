@@ -6,7 +6,9 @@ import { Users, FileText, Palette } from 'lucide-react-native';
 
 import { useEditGroup } from '../hooks/useEditGroup';
 import { ExpenseGroup } from '../types/expense';
-import { theme } from '../constants/theme';
+import { createUseStyles } from '../styles/createUseStyles';
+import { getThemeColors } from '../styles/colors';
+import { useTheme } from '../contexts/ThemeContext';
 import Card from '../components/ui/Card';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
@@ -27,14 +29,37 @@ type Props = {
 };
 
 const EditGroupScreen: React.FC<Props> = ({ route }) => {
-  const { group } = route.params;
+  console.log('🔧 EditGroupScreen - Component rendered');
+  console.log('🔧 EditGroupScreen - Route params:', route?.params);
+  
+  const { group } = route.params || {};
+  
+  if (!group) {
+    console.error('❌ EditGroupScreen - No group data provided');
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+        <Text style={{ fontSize: 18, textAlign: 'center' }}>
+          Error: No group data provided
+        </Text>
+      </View>
+    );
+  }
+  
   const navigation = useNavigation();
   const mutation = useEditGroup();
+  const { theme } = useTheme();
+  const themeColors = getThemeColors(theme);
 
-  const [name, setName] = useState(group.name);
+  console.log('🔧 EditGroupScreen - Group data:', group);
+  console.log('🔧 EditGroupScreen - Theme:', theme);
+
+  const [name, setName] = useState(group.name || '');
   const [description, setDescription] = useState(group.description || '');
-  const [selectedColor, setSelectedColor] = useState(group.color);
+  const [selectedColor, setSelectedColor] = useState(group.color || '#6366F1');
   const [errors, setErrors] = useState<{ name?: string }>({});
+
+  console.log('🔧 EditGroupScreen - Received group:', group);
+  console.log('🔧 EditGroupScreen - Theme:', theme);
 
   const validateForm = () => {
     const newErrors: { name?: string } = {};
@@ -47,20 +72,30 @@ const EditGroupScreen: React.FC<Props> = ({ route }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = () => {
-    if (!validateForm()) return;
+  const handleSave = async () => {
+    console.log('💾 Saving group changes...');
+    
+    if (!validateForm()) {
+      console.log('❌ Form validation failed');
+      return;
+    }
 
-    mutation.mutate({
-      id: group.id,
-      updates: {
-        name: name.trim(),
-        description: description.trim() || undefined,
-        color: selectedColor,
-        updatedAt: new Date().toISOString(),
-      },
-    });
+    try {
+      await mutation.mutateAsync({
+        id: group.id,
+        updates: {
+          name: name.trim(),
+          description: description.trim() || undefined,
+          color: selectedColor,
+          updatedAt: new Date().toISOString(),
+        },
+      });
 
-    navigation.goBack();
+      console.log('✅ Group updated successfully');
+      navigation.goBack();
+    } catch (error) {
+      console.error('❌ Error updating group:', error);
+    }
   };
 
   const isFormValid = name.trim();
@@ -69,8 +104,10 @@ const EditGroupScreen: React.FC<Props> = ({ route }) => {
     (description.trim() || undefined) !== group.description || 
     selectedColor !== group.color;
 
+  console.log('🔧 EditGroupScreen - About to render UI');
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: themeColors.backgroundDefault }]}>
       <SafeAreaView edges={['top']} />
       
       <Header
@@ -80,8 +117,11 @@ const EditGroupScreen: React.FC<Props> = ({ route }) => {
       />
       
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-
-        <Card style={styles.formCard} padding="xl">
+        <Card style={styles.formCard}>
+          <Text style={{ fontSize: 16, marginBottom: 16, color: themeColors.textPrimary }}>
+            Editing: {group.name}
+          </Text>
+          
           <Input
             label="Group Name"
             placeholder="e.g. Vacation 2024, Work Expenses"
@@ -91,7 +131,7 @@ const EditGroupScreen: React.FC<Props> = ({ route }) => {
               if (errors.name) setErrors(prev => ({ ...prev, name: undefined }));
             }}
             error={errors.name}
-            leftIcon={<Users size={20} color={theme.colors.text.tertiary} />}
+            leftIcon={<Users size={20} color={themeColors.textTertiary} />}
           />
 
           <Input
@@ -99,15 +139,15 @@ const EditGroupScreen: React.FC<Props> = ({ route }) => {
             placeholder="Brief description of this group"
             value={description}
             onChangeText={setDescription}
-            leftIcon={<FileText size={20} color={theme.colors.text.tertiary} />}
+            leftIcon={<FileText size={20} color={themeColors.textTertiary} />}
             multiline
             numberOfLines={3}
             style={styles.descriptionInput}
           />
 
           <View style={styles.colorSection}>
-            <Text style={styles.colorLabel}>
-              <Palette size={16} color={theme.colors.text.primary} /> Group Color
+            <Text style={[styles.colorLabel, { color: themeColors.textPrimary }]}>
+              <Palette size={16} color={themeColors.textPrimary} /> Group Color
             </Text>
             <View style={styles.colorGrid}>
               {GROUP_COLORS.map((color) => (
@@ -116,7 +156,7 @@ const EditGroupScreen: React.FC<Props> = ({ route }) => {
                   style={[
                     styles.colorOption,
                     { backgroundColor: color },
-                    selectedColor === color && styles.selectedColor,
+                    selectedColor === color && [styles.selectedColor, { borderColor: themeColors.textPrimary }],
                   ]}
                   onPress={() => setSelectedColor(color)}
                   activeOpacity={0.8}
@@ -143,47 +183,44 @@ export default EditGroupScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
   },
   scrollView: {
     flex: 1,
   },
   formCard: {
-    marginHorizontal: theme.spacing.lg,
-    marginBottom: theme.spacing.xl,
+    margin: 24,
+    padding: 24,
   },
   descriptionInput: {
     minHeight: 80,
     textAlignVertical: 'top',
   },
   colorSection: {
-    marginBottom: theme.spacing.lg,
+    marginBottom: 24,
   },
   colorLabel: {
-    ...theme.typography.bodySmall,
+    fontSize: 14,
     fontWeight: '600',
-    color: theme.colors.text.primary,
-    marginBottom: theme.spacing.md,
+    marginBottom: 16,
     flexDirection: 'row',
     alignItems: 'center',
   },
   colorGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: theme.spacing.md,
+    gap: 16,
   },
   colorOption: {
     width: 40,
     height: 40,
-    borderRadius: theme.borderRadius.md,
+    borderRadius: 12,
     borderWidth: 3,
     borderColor: 'transparent',
   },
   selectedColor: {
-    borderColor: theme.colors.text.primary,
     transform: [{ scale: 1.1 }],
   },
   submitButton: {
-    marginTop: theme.spacing.md,
+    marginTop: 16,
   },
 });

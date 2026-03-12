@@ -7,9 +7,9 @@ import {
   TextInputProps,
   ViewStyle,
   Animated,
-  InteractionManager,
 } from 'react-native';
-import { theme } from '../../constants/theme';
+import { useTheme } from '../../contexts/ThemeContext';
+import { getThemeColors } from '../../styles/colors';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -30,6 +30,8 @@ const Input: React.FC<InputProps> = ({
   animated = true,
   ...props
 }) => {
+  const { theme } = useTheme();
+  const themeColors = getThemeColors(theme);
   const borderColorAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -73,19 +75,58 @@ const Input: React.FC<InputProps> = ({
 
   const animatedBorderColor = borderColorAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [theme.colors.border.light, theme.colors.primary],
+    outputRange: [themeColors.borderLight, themeColors.primary],
   });
 
-  const inputContainerStyle = [
-    styles.inputContainer,
-    error ? styles.error : null,
-    leftIcon ? styles.withLeftIcon : null,
-    rightIcon ? styles.withRightIcon : null,
-  ].filter(Boolean);
+  const getInputContainerStyle = () => {
+    const baseStyle = {
+      flexDirection: 'row' as const,
+      alignItems: 'center' as const,
+      backgroundColor: themeColors.surface,
+      borderWidth: 1,
+      borderColor: error ? themeColors.danger : themeColors.borderLight,
+      borderRadius: 12,
+      paddingHorizontal: 16,
+      minHeight: 48,
+    };
+
+    const iconStyles = {
+      paddingLeft: leftIcon ? 8 : 16,
+      paddingRight: rightIcon ? 8 : 16,
+    };
+
+    return [baseStyle, iconStyles];
+  };
+
+  const getTextStyles = () => ({
+    label: {
+      fontSize: 14,
+      fontWeight: '600' as const,
+      color: themeColors.textPrimary,
+      marginBottom: 8,
+    },
+    input: {
+      flex: 1,
+      fontSize: 16,
+      fontWeight: '400' as const,
+      lineHeight: 24,
+      color: themeColors.textPrimary,
+      paddingVertical: 16,
+    },
+    error: {
+      fontSize: 12,
+      fontWeight: '400' as const,
+      lineHeight: 16,
+      color: themeColors.danger,
+      marginTop: 4,
+    },
+  });
+
+  const textStyles = getTextStyles();
 
   return (
     <View style={[styles.container, containerStyle]}>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && <Text style={textStyles.label}>{label}</Text>}
       
       {/* Separate animated views to avoid native driver conflicts */}
       <Animated.View 
@@ -95,7 +136,7 @@ const Input: React.FC<InputProps> = ({
       >
         <Animated.View
           style={[
-            inputContainerStyle,
+            getInputContainerStyle(),
             animated && !error && {
               borderColor: animatedBorderColor,
             },
@@ -104,8 +145,8 @@ const Input: React.FC<InputProps> = ({
           {leftIcon && <View style={styles.leftIcon}>{leftIcon}</View>}
           
           <TextInput
-            style={[styles.input, style]}
-            placeholderTextColor={theme.colors.text.tertiary}
+            style={[textStyles.input, style]}
+            placeholderTextColor={themeColors.textTertiary}
             onFocus={handleFocus}
             onBlur={handleBlur}
             {...props}
@@ -115,56 +156,20 @@ const Input: React.FC<InputProps> = ({
         </Animated.View>
       </Animated.View>
       
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {error && <Text style={textStyles.error}>{error}</Text>}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: theme.spacing.md,
-  },
-  label: {
-    ...theme.typography.bodySmall,
-    fontWeight: '600',
-    color: theme.colors.text.primary,
-    marginBottom: theme.spacing.sm,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: theme.colors.surface,
-    borderWidth: 1,
-    borderColor: theme.colors.border.light,
-    borderRadius: theme.borderRadius.md,
-    paddingHorizontal: theme.spacing.md,
-    minHeight: 48,
-  },
-  error: {
-    borderColor: theme.colors.danger,
-  },
-  withLeftIcon: {
-    paddingLeft: theme.spacing.sm,
-  },
-  withRightIcon: {
-    paddingRight: theme.spacing.sm,
-  },
-  input: {
-    flex: 1,
-    ...theme.typography.body,
-    color: theme.colors.text.primary,
-    paddingVertical: theme.spacing.md,
+    marginBottom: 16,
   },
   leftIcon: {
-    marginRight: theme.spacing.sm,
+    marginRight: 8,
   },
   rightIcon: {
-    marginLeft: theme.spacing.sm,
-  },
-  errorText: {
-    ...theme.typography.caption,
-    color: theme.colors.danger,
-    marginTop: theme.spacing.xs,
+    marginLeft: 8,
   },
 });
 

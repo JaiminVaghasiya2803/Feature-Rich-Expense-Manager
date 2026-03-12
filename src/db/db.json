@@ -32,7 +32,7 @@
       "description": "Summer vacation expenses",
       "color": "#6366F1",
       "createdAt": "2026-03-12T10:00:00.000Z",
-      "updatedAt": "2026-03-12T10:00:00.000Z"
+      "updatedAt": "2026-03-12T12:17:53.030Z"
     },
     {
       "id": "2",
@@ -43,11 +43,35 @@
       "updatedAt": "2026-03-12T10:00:00.000Z"
     },
     {
-      "id": 1773304561156,
+      "id": "1773304561156",
       "name": "2026",
       "color": "#6366F1",
       "createdAt": "2026-03-12T08:36:00.395Z",
       "updatedAt": "2026-03-12T08:36:00.396Z"
+    },
+    {
+      "id": "123456789",
+      "name": "Test Group",
+      "description": "Test description",
+      "color": "#6366F1",
+      "createdAt": "2026-03-12T10:00:00.000Z",
+      "updatedAt": "2026-03-12T10:00:00.000Z"
+    },
+    {
+      "id": "1773316990247",
+      "name": "Ts",
+      "description": "Test",
+      "color": "#EF4444",
+      "createdAt": "2026-03-12T12:03:10.247Z",
+      "updatedAt": "2026-03-12T12:03:10.247Z"
+    },
+    {
+      "id": "1773317780126",
+      "name": "Tssstee",
+      "description": "Tttest",
+      "color": "#6B7280",
+      "createdAt": "2026-03-12T12:16:20.126Z",
+      "updatedAt": "2026-03-12T12:16:20.126Z"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

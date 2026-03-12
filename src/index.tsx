@@ -8,6 +8,8 @@ import { setOnlineStatus } from './store/networkSlice';
 import { replayQueue } from './queue/replayQueue';
 import QueryProvider from './providers/QueryProvider';
 import { AppProvider } from './contexts/AppContext';
+import { BillSplitProvider } from './contexts/BillSplitContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import AppContainer from './components/AppContainer';
 import { StatusBar, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -42,9 +44,13 @@ const App = () => {
       <Provider store={store}>
         <StatusBar barStyle="dark-content" />
         <QueryProvider>
-          <AppProvider>
-            <AppContainer />
-          </AppProvider>
+          <ThemeProvider>
+            <AppProvider>
+              <BillSplitProvider>
+                <AppContainer />
+              </BillSplitProvider>
+            </AppProvider>
+          </ThemeProvider>
         </QueryProvider>
       </Provider>
     </SafeAreaView>
