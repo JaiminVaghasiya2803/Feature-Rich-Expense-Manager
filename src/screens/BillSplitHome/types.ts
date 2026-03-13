@@ -38,5 +38,5 @@ export namespace BillSplitHomeProps {
 }
 
 export interface BillSplitHomeScreenProps {
-  navigation: any;
+  navigation: unknown;
 }

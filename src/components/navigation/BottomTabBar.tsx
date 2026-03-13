@@ -19,7 +19,7 @@ const Tab = createBottomTabNavigator();
 
 export interface TabConfig {
   name: string;
-  component: React.ComponentType<any>;
+  component: React.ComponentType<object>;
   label: string;
   icon: keyof typeof iconMap;
   badge?: number;
@@ -61,7 +61,7 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({
       initialRouteName={initialRouteName}
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarIcon: ({ focused: _focused, color, size }) => {
+        tabBarIcon: ({ color, size }) => {
           const tab = tabs.find(t => t.name === route.name);
           const IconComponent = tab ? iconMap[tab.icon] : Calculator;
           return <IconComponent size={size} color={color} />;

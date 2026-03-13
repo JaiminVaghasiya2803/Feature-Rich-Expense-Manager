@@ -115,7 +115,7 @@ export const debugAppLock = {
   },
 
   // Log current state
-  logState(securityContext: any) {
+  logState(securityContext: unknown) {
     console.log('📊 Current Security State:', {
       isLocked: securityContext.isLocked,
       isEnabled: securityContext.isEnabled,

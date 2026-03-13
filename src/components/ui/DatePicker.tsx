@@ -15,7 +15,7 @@ interface DatePickerProps {
   value: Date;
   onDateChange: (date: Date) => void;
   error?: string;
-  containerStyle?: any;
+  containerStyle?: unknown;
 }
 
 const DatePicker: React.FC<DatePickerProps> = ({
@@ -149,7 +149,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
               <View style={styles.quickOptionsContainer}>
                 <Text style={styles.sectionTitle}>Quick Select</Text>
                 <View style={styles.quickOptions}>
-                  {quickOptions.map((option, index) => (
+                  {quickOptions.map((option, _index) => (
                     <TouchableOpacity
                       key={index}
                       style={[
@@ -210,7 +210,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
                 {/* Calendar Grid */}
                 <View style={styles.calendarGrid}>
-                  {calendarDays.map((date, index) => {
+                  {calendarDays.map((date, _index) => {
                     const isCurrentMonth = date.getMonth() === currentMonth.getMonth();
                     const isToday = date.toDateString() === today.toDateString();
                     const isSelected = date.toDateString() === value.toDateString();

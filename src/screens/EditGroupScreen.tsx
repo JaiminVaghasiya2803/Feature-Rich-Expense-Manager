@@ -6,7 +6,6 @@ import { Users, FileText, Palette } from 'lucide-react-native';
 
 import { useEditGroup } from '../hooks/useEditGroup';
 import { ExpenseGroup } from '../types/expense';
-import { createUseStyles } from '../styles/createUseStyles';
 import { getThemeColors } from '../styles/colors';
 import { useTheme } from '../contexts/ThemeContext';
 import Card from '../components/ui/Card';

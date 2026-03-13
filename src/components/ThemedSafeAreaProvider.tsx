@@ -14,7 +14,7 @@ interface ThemedSafeAreaViewProps {
   bottomColor?: string;
   backgroundColor?: string;
   edges?: ('top' | 'right' | 'bottom' | 'left')[];
-  style?: any;
+  style?: object;
 }
 
 // Inner component that uses the safe area context

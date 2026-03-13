@@ -26,6 +26,6 @@ export const useEnhancedTheme = () => {
 /**
  * Get theme colors with custom overrides
  */
-export const getEnhancedThemeColors = (theme: any, customTheme?: any) => {
+export const getEnhancedThemeColors = (theme: unknown, customTheme?: unknown) => {
   return getThemeColors(theme, customTheme);
 };

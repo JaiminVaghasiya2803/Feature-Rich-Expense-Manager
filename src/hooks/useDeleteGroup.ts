@@ -25,11 +25,11 @@ export const useDeleteGroup = () => {
 
       const previousGroups = queryClient.getQueryData(['groups']);
 
-      queryClient.setQueryData(['groups'], (old: any) => {
+      queryClient.setQueryData(['groups'], (old: unknown) => {
         if (!old) return old;
 
-        const newPages = old.pages.map((page: any[]) =>
-          page.filter((group: any) => group.id !== id)
+        const newPages = old.pages.map((page: unknown[]) =>
+          page.filter((group: unknown) => group.id !== id)
         );
 
         return {
@@ -40,7 +40,7 @@ export const useDeleteGroup = () => {
 
       return { previousGroups };
     },
-    onError: (_err, _id, context) => {
+    onError: (_err, _id, _context) => {
       if (context?.previousGroups) {
         queryClient.setQueryData(['groups'], context.previousGroups);
       }

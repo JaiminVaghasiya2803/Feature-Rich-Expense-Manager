@@ -28,7 +28,7 @@ import { getStyles } from './styles';
 const useStyles = createUseStyles(getStyles);
 
 interface Props {
-  navigation: any;
+  navigation: unknown;
   route: {
     params: {
       groupMembers: Person[];
@@ -129,7 +129,7 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const normalizePercentages = () => {
     const selectedPersons = splitPersons.filter(p => p.isSelected);
-    const totalPercentage = selectedPersons.reduce((sum, p) => sum + p.percentage, 0);
+    const totalPercentage = selectedPersons.reduce((sum, _p) => sum + p.percentage, 0);
     
     if (totalPercentage !== 100 && selectedPersons.length > 0) {
       const factor = 100 / totalPercentage;
@@ -142,11 +142,11 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const getTotalSplitAmount = () => {
-    return splitPersons.reduce((sum, person) => sum + (person.isSelected ? person.amount : 0), 0);
+    return splitPersons.reduce((sum, _person) => sum + (person.isSelected ? person.amount : 0), 0);
   };
 
   const getTotalPercentage = () => {
-    return splitPersons.reduce((sum, person) => sum + (person.isSelected ? person.percentage : 0), 0);
+    return splitPersons.reduce((sum, _person) => sum + (person.isSelected ? person.percentage : 0), 0);
   };
 
   const isValidSplit = () => {

@@ -26,7 +26,7 @@ import { getStyles } from './GroupDetails/styles';
 const useStyles = createUseStyles(getStyles);
 
 interface Props {
-  navigation: any;
+  navigation: unknown;
   route: {
     params: {
       group: BillGroup;
@@ -125,8 +125,8 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const calculateSettlements = (balancesList: Balance[]) => {
     const settlements: Settlement[] = [];
-    const debtors = balancesList.filter(b => b.balance < 0).sort((a, b) => a.balance - b.balance);
-    const creditors = balancesList.filter(b => b.balance > 0).sort((a, b) => b.balance - a.balance);
+    const debtors = balancesList.filter(b => b.balance < 0).sort((a, _b) => a.balance - b.balance);
+    const creditors = balancesList.filter(b => b.balance > 0).sort((a, _b) => b.balance - a.balance);
 
     let i = 0, j = 0;
     while (i < debtors.length && j < creditors.length) {
@@ -257,7 +257,7 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
   }: { 
     tab: 'expenses' | 'balances' | 'settle'; 
     title: string; 
-    icon: any;
+    icon: unknown;
   }) => (
     <TouchableOpacity
       style={[
@@ -307,7 +307,7 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
             <View style={styles.summaryItem}>
               <DollarSign size={20} color={themeColors.secondary} />
               <Text style={styles.summaryValue}>
-                ₹{expenses.reduce((sum, e) => sum + e.amount, 0).toFixed(2)}
+                ₹{expenses.reduce((sum, _e) => sum + e.amount, 0).toFixed(2)}
               </Text>
               <Text style={styles.summaryLabel}>Total</Text>
             </View>
@@ -361,7 +361,7 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
         {activeTab === 'settle' && (
           <View style={styles.settleContent}>
             {settlements.length > 0 ? (
-              settlements.map((settlement, index) => (
+              settlements.map((settlement, _index) => (
                 <SettlementItem key={index} settlement={settlement} />
               ))
             ) : (

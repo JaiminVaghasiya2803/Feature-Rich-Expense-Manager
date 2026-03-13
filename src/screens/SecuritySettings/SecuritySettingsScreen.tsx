@@ -28,11 +28,7 @@ import { getStyles } from './styles';
 
 const useStyles = createUseStyles(getStyles);
 
-interface Props {
-  navigation: any;
-}
-
-const SecuritySettingsScreen: React.FC<Props> = ({ navigation }) => {
+const SecuritySettingsScreen: React.FC = () => {
   const { theme } = useTheme();
   const { customTheme } = useCustomTheme();
   const themeColors = getThemeColors(theme, customTheme || undefined);
@@ -69,7 +65,7 @@ const SecuritySettingsScreen: React.FC<Props> = ({ navigation }) => {
               try {
                 await disableSecurity();
                 Alert.alert('Success', 'App lock has been disabled');
-              } catch (error) {
+              } catch {
                 Alert.alert('Error', 'Failed to disable app lock');
               }
             }
@@ -108,7 +104,7 @@ const SecuritySettingsScreen: React.FC<Props> = ({ navigation }) => {
         'Success', 
         `App lock has been enabled with ${method === 'both' ? 'password and biometric' : 'password'} authentication`
       );
-    } catch (error) {
+    } catch {
       Alert.alert('Error', 'Failed to enable app lock');
     } finally {
       setIsLoading(false);

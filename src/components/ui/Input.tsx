@@ -37,7 +37,7 @@ const Input: React.FC<InputProps> = ({
   const borderColorAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
-  const handleFocus = (e: any) => {
+  const handleFocus = (e: unknown) => {
     if (animated) {
       // Run animations separately to avoid conflicts
       Animated.timing(borderColorAnim, {
@@ -58,7 +58,7 @@ const Input: React.FC<InputProps> = ({
     }
   };
 
-  const handleBlur = (e: any) => {
+  const handleBlur = (e: unknown) => {
     if (animated) {
       // Run animations separately to avoid conflicts
       Animated.timing(borderColorAnim, {

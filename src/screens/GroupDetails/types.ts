@@ -71,7 +71,7 @@ export namespace GroupDetailsProps {
 }
 
 export interface GroupDetailsScreenProps {
-  navigation: any;
+  navigation: unknown;
   route: {
     params: {
       group: BillGroup;

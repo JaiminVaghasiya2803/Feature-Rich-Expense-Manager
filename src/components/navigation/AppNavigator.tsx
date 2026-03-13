@@ -128,7 +128,7 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({
           options={{
             tabBarLabel: tab.label,
             tabBarBadge: tab.badge,
-            tabBarIcon: ({ focused: _focused, color, size }) => {
+            tabBarIcon: ({ color, size }) => {
               const IconComponent = iconMap[tab.icon as keyof typeof iconMap] || Calculator;
               return <IconComponent size={size} color={color} />;
             },

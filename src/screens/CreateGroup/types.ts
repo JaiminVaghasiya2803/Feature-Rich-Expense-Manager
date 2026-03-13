@@ -49,5 +49,5 @@ export namespace CreateGroupProps {
 }
 
 export interface CreateGroupScreenProps {
-  navigation: any;
+  navigation: unknown;
 }

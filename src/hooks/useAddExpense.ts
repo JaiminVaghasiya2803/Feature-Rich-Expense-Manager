@@ -34,12 +34,12 @@ export const useAddExpense = () => {
         updatedAt: new Date().toISOString(),
       };
 
-      queryClient.setQueryData(QUERY_KEYS.EXPENSES, (old: any) => {
+      queryClient.setQueryData(QUERY_KEYS.EXPENSES, (old: unknown) => {
         if (!old) return old;
 
         return {
           ...old,
-          pages: old.pages.map((page: any, index: number) =>
+          pages: old.pages.map((page: unknown, index: number) =>
             index === 0
               ? {
                   ...page,
@@ -54,16 +54,16 @@ export const useAddExpense = () => {
       return { previousData, tempId: tempExpense.id };
     },
 
-    onError: (_err, _newExpense, context) => {
+    onError: (_err, _newExpense, _context) => {
       queryClient.setQueryData(QUERY_KEYS.EXPENSES, context?.previousData);
     },
 
-    onSuccess: (serverExpense, _variables, context: any) => {
-      queryClient.setQueryData(QUERY_KEYS.EXPENSES, (old: any) => {
+    onSuccess: (serverExpense, _variables, context: unknown) => {
+      queryClient.setQueryData(QUERY_KEYS.EXPENSES, (old: unknown) => {
         if (!old) return old;
         return {
           ...old,
-          pages: old.pages.map((page: any) => ({
+          pages: old.pages.map((page: unknown) => ({
             ...page,
             data: page.data.map((exp: Expense) =>
               exp.id === context.tempId ? serverExpense : exp,

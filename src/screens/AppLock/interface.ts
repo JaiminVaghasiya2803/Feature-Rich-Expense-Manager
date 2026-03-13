@@ -1,6 +1,5 @@
 export interface AppLockScreenProps {
-  // Props interface for AppLockScreen component
-  // Currently no specific props needed as it uses context
+  onUnlock?: () => void;
 }
 
 export interface AuthenticationState {

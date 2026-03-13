@@ -2,10 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeColors } from '../styles/colors';
 
-interface CustomThemeColors extends Partial<ThemeColors> {
-  // Custom theme color overrides
-  // Extends the base theme colors with user customizations
-}
+type CustomThemeColors = Partial<ThemeColors>;
 
 interface CustomThemeContextType {
   customTheme: CustomThemeColors | null;

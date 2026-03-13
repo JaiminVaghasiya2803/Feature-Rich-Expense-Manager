@@ -23,7 +23,7 @@ import { getStyles } from './styles';
 const useStyles = createUseStyles(getStyles);
 
 interface Props {
-  navigation: any;
+  navigation: unknown;
 }
 
 interface GroupMember {

@@ -21,7 +21,7 @@ import { getStyles } from './styles';
 const useStyles = createUseStyles(getStyles);
 
 interface Props {
-  navigation: any;
+  navigation: unknown;
 }
 
 const GroupsScreen: React.FC<Props> = ({ navigation }) => {

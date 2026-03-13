@@ -10,7 +10,7 @@ export const loadQueue = async () => {
   }
 };
 
-export const saveQueue = async (queue: any[]) => {
+export const saveQueue = async (queue: unknown[]) => {
   try {
     await AsyncStorage.setItem(
       STORAGE_KEYS.OFFLINE_QUEUE,

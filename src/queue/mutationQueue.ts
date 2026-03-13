@@ -13,7 +13,7 @@ export const initQueue = async () => {
   return Promise.resolve();
 };
 
-export const enqueueMutation = async (mutation: any) => {
+export const enqueueMutation = async (mutation: unknown) => {
   store.dispatch(addToQueue(mutation));
 };
 

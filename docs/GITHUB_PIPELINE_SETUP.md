@@ -184,26 +184,25 @@ git push origin feature/app-lock-improvements
 ### **Quality Gates**
 
 #### **Local Development**
-- Pre-commit hooks prevent bad commits
-- Fast feedback on lint/type issues
-- Automatic code formatting
+- Pre-commit hooks prevent **errors** from being committed
+- **Warnings are allowed** but visible for developer awareness
+- Fast feedback on critical issues only
 
 #### **Pull Request**
-- Lint check pipeline (~2-3 min)
-- Full CI pipeline (~15-20 min)
-- Required reviewer approval
+- Lint check pipeline blocks on **errors only**
+- **Warnings are reported** but don't block merges
+- Required reviewer approval still needed
 
 #### **Main Branch**
-- Branch protection quality gate
-- Zero errors policy
-- Coverage requirements
-- Security validation
+- **Errors prevent deployment** to production
+- **Warnings are tracked** but don't block releases
+- Continuous quality monitoring
 
 ## 📊 Quality Standards
 
 ### **Code Quality**
-- ✅ Zero ESLint errors in production
-- ⚠️ Maximum 78 warnings (current baseline)
+- ✅ **Zero ESLint errors** (blocking)
+- ⚠️ **49 ESLint warnings** (non-blocking, tracked)
 - ✅ TypeScript strict mode
 - ✅ Prettier formatting enforced
 

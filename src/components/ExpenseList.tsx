@@ -32,7 +32,7 @@ const ExpenseList: React.FC<Props> = ({
   // Track IDs being updated or added
   const pendingMutations = useMutationState({
     filters: { status: 'pending' },
-    select: mutation => mutation.state.variables as any,
+    select: mutation => mutation.state.variables as { id?: string | number },
   });
 
   const syncingIds = new Set(

@@ -53,10 +53,10 @@ export namespace AddBillExpenseProps {
 }
 
 export interface AddBillExpenseScreenProps {
-  navigation: any;
+  navigation: unknown;
   route: {
     params: {
-      groupMembers: any[];
+      groupMembers: unknown[];
       groupId: string;
     };
   };

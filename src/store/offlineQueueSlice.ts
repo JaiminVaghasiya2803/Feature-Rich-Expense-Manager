@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type QueueItem = {
   type: string;
-  payload: any;
+  payload: unknown;
 };
 
 type OfflineQueueState = {

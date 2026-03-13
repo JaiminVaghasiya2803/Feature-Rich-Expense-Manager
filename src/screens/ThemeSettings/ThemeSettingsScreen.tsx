@@ -30,7 +30,7 @@ interface Props {
   };
 }
 
-const ThemeSettingsScreen: React.FC<Props> = ({ navigation: _navigation }) => {
+const ThemeSettingsScreen: React.FC<Props> = () => {
   const { theme, setTheme, isDark } = useTheme();
   const { customTheme, setCustomTheme, resetToDefault, isCustomThemeActive } = useCustomTheme();
   const themeColors = getThemeColors(theme, customTheme || undefined);
@@ -364,7 +364,7 @@ const ThemeSettingsScreen: React.FC<Props> = ({ navigation: _navigation }) => {
     setTheme(newTheme as any);
   };
 
-  const handlePresetApply = (preset: any) => {
+  const handlePresetApply = (preset: unknown) => {
     const themeType = selectedThemeCategory === 'light' ? 'Light' : 'Dark';
     
     // Actually apply the theme

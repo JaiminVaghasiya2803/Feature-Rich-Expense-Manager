@@ -24,7 +24,7 @@ import { apiClient } from '../../api/client';
 const useStyles = createUseStyles(getStyles);
 
 interface Props {
-  navigation: any;
+  navigation: unknown;
 }
 
 const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
@@ -253,7 +253,7 @@ const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.sectionTitle}>Members ({members.length})</Text>
           
           <View style={styles.membersList}>
-            {members.map((member, index) => (
+            {members.map((member, _index) => (
               <MemberItem 
                 key={member.id} 
                 member={member} 

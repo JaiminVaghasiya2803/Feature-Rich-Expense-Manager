@@ -1,6 +1,6 @@
 import { ColorSchemeName } from 'react-native';
 import { getThemeColors, ThemeColors } from '../../styles/colors';
-import { BillSplitHomeProps } from './interface';
+import { BillSplitHomeStyles } from './interface';
 
 export const getStyles = ({
   theme,
@@ -8,7 +8,7 @@ export const getStyles = ({
 }: {
   theme: ColorSchemeName;
   customTheme?: Partial<ThemeColors>;
-}): BillSplitHomeProps.BillSplitHomeStyles => {
+}): BillSplitHomeStyles => {
   const themeColors = getThemeColors(theme, customTheme);
   
   return {

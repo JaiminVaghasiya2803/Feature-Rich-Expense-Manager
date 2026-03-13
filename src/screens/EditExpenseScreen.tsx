@@ -8,7 +8,7 @@ import Card from '../components/ui/Card';
 interface Props {
   route: {
     params: {
-      expense: any;
+      expense: unknown;
     };
   };
 }

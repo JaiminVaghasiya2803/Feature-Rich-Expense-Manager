@@ -29,12 +29,12 @@ export const useDeleteExpense = () => {
 
       const previousData = queryClient.getQueryData<any>(QUERY_KEYS.EXPENSES);
 
-      queryClient.setQueryData(QUERY_KEYS.EXPENSES, (old: any) => {
+      queryClient.setQueryData(QUERY_KEYS.EXPENSES, (old: unknown) => {
         if (!old) return old;
 
         return {
           ...old,
-          pages: old.pages.map((page: any) => ({
+          pages: old.pages.map((page: unknown) => ({
             ...page,
             data: page.data.filter((expense: Expense) => expense.id !== id),
           })),
@@ -44,7 +44,7 @@ export const useDeleteExpense = () => {
       return { previousData };
     },
 
-    onError: (_err, _id, context) => {
+    onError: (_err, _id, _context) => {
       queryClient.setQueryData(QUERY_KEYS.EXPENSES, context?.previousData);
     },
 

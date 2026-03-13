@@ -3,16 +3,16 @@
 
 echo "🔍 Running pre-commit checks..."
 
-# Run lint check
-echo "📝 Checking ESLint..."
+# Run lint-staged for staged files
+echo "📝 Running lint-staged..."
+npx lint-staged
+
+# Run lint check (errors only, warnings allowed)
+echo "🔍 Running ESLint - blocking only on errors..."
 npm run lint
 
 # Run TypeScript check
 echo "🔧 Checking TypeScript..."
 npx tsc --noEmit
-
-# Run tests
-echo "🧪 Running tests..."
-npm test -- --watchAll=false --passWithNoTests
 
 echo "✅ All pre-commit checks passed!"

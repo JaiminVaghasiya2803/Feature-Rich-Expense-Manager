@@ -19,7 +19,7 @@ import { getStyles } from './styles';
 const useStyles = createUseStyles(getStyles);
 
 interface Props {
-  navigation: any;
+  navigation: unknown;
 }
 
 const BillSplitHomeScreen: React.FC<Props> = ({ navigation }) => {
@@ -29,7 +29,7 @@ const BillSplitHomeScreen: React.FC<Props> = ({ navigation }) => {
   const styles = useStyles({ theme, customTheme: customTheme || undefined });
   
   const [groups, setGroups] = useState<BillGroup[]>([]);
-  const [totalBalance, setTotalBalance] = useState(0);
+  const [totalBalance] = useState(0);
 
   useEffect(() => {
      loadGroups();
@@ -80,7 +80,7 @@ const BillSplitHomeScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const GroupCard = ({ group }: { group: BillGroup }) => {
-    const totalExpenses = group.expenses.reduce((sum, expense) => sum + expense.amount, 0);
+    const totalExpenses = group.expenses.reduce((sum, _expense) => sum + expense.amount, 0);
     
     return (
       <TouchableOpacity onPress={() => openGroup(group)}>
