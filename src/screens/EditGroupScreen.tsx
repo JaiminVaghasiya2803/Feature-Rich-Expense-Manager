@@ -14,9 +14,18 @@ import Button from '../components/ui/Button';
 import Header from '../components/ui/Header';
 
 const GROUP_COLORS = [
-  '#6366F1', '#8B5CF6', '#EC4899', '#EF4444',
-  '#F59E0B', '#10B981', '#3B82F6', '#6B7280',
-  '#84CC16', '#F97316', '#14B8A6', '#8B5A2B',
+  '#6366F1',
+  '#8B5CF6',
+  '#EC4899',
+  '#EF4444',
+  '#F59E0B',
+  '#10B981',
+  '#3B82F6',
+  '#6B7280',
+  '#84CC16',
+  '#F97316',
+  '#14B8A6',
+  '#8B5A2B',
 ];
 
 type Props = {
@@ -30,50 +39,55 @@ type Props = {
 const EditGroupScreen: React.FC<Props> = ({ route }) => {
   console.log('🔧 EditGroupScreen - Component rendered');
   console.log('🔧 EditGroupScreen - Route params:', route?.params);
-  
-  const { group } = route.params || {};
-  
-  if (!group) {
-    console.error('❌ EditGroupScreen - No group data provided');
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
-        <Text style={{ fontSize: 18, textAlign: 'center' }}>
-          Error: No group data provided
-        </Text>
-      </View>
-    );
-  }
-  
+
+  // All hooks must be called before any early returns
   const navigation = useNavigation();
   const mutation = useEditGroup();
   const { theme } = useTheme();
   const themeColors = getThemeColors(theme);
 
-  console.log('🔧 EditGroupScreen - Group data:', group);
-  console.log('🔧 EditGroupScreen - Theme:', theme);
-
-  const [name, setName] = useState(group.name || '');
-  const [description, setDescription] = useState(group.description || '');
-  const [selectedColor, setSelectedColor] = useState(group.color || '#6366F1');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [selectedColor, setSelectedColor] = useState('#6366F1');
   const [errors, setErrors] = useState<{ name?: string }>({});
+
+  const { group } = route.params || {};
+
+  // Initialize state when group is available
+  React.useEffect(() => {
+    if (group) {
+      setName(group.name || '');
+      setDescription(group.description || '');
+      setSelectedColor(group.color || '#6366F1');
+    }
+  }, [group]);
+
+  if (!group) {
+    console.error('❌ EditGroupScreen - No group data provided');
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+        <Text style={{ fontSize: 18, textAlign: 'center' }}>Error: No group data provided</Text>
+      </View>
+    );
+  }
 
   console.log('🔧 EditGroupScreen - Received group:', group);
   console.log('🔧 EditGroupScreen - Theme:', theme);
 
   const validateForm = () => {
     const newErrors: { name?: string } = {};
-    
+
     if (!name.trim()) {
       newErrors.name = 'Group name is required';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSave = async () => {
     console.log('💾 Saving group changes...');
-    
+
     if (!validateForm()) {
       console.log('❌ Form validation failed');
       return;
@@ -98,9 +112,9 @@ const EditGroupScreen: React.FC<Props> = ({ route }) => {
   };
 
   const isFormValid = name.trim();
-  const hasChanges = 
-    name.trim() !== group.name || 
-    (description.trim() || undefined) !== group.description || 
+  const hasChanges =
+    name.trim() !== group.name ||
+    (description.trim() || undefined) !== group.description ||
     selectedColor !== group.color;
 
   console.log('🔧 EditGroupScreen - About to render UI');
@@ -108,24 +122,24 @@ const EditGroupScreen: React.FC<Props> = ({ route }) => {
   return (
     <View style={[styles.container, { backgroundColor: themeColors.backgroundDefault }]}>
       <SafeAreaView edges={['top']} />
-      
+
       <Header
         title="Edit Group"
         subtitle="Update group details"
         onBack={() => navigation.goBack()}
       />
-      
+
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <Card style={styles.formCard}>
           <Text style={{ fontSize: 16, marginBottom: 16, color: themeColors.textPrimary }}>
             Editing: {group.name}
           </Text>
-          
+
           <Input
             label="Group Name"
             placeholder="e.g. Vacation 2024, Work Expenses"
             value={name}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setName(text);
               if (errors.name) setErrors(prev => ({ ...prev, name: undefined }));
             }}
@@ -149,13 +163,16 @@ const EditGroupScreen: React.FC<Props> = ({ route }) => {
               <Palette size={16} color={themeColors.textPrimary} /> Group Color
             </Text>
             <View style={styles.colorGrid}>
-              {GROUP_COLORS.map((color) => (
+              {GROUP_COLORS.map(color => (
                 <TouchableOpacity
                   key={color}
                   style={[
                     styles.colorOption,
                     { backgroundColor: color },
-                    selectedColor === color && [styles.selectedColor, { borderColor: themeColors.textPrimary }],
+                    selectedColor === color && [
+                      styles.selectedColor,
+                      { borderColor: themeColors.textPrimary },
+                    ],
                   ]}
                   onPress={() => setSelectedColor(color)}
                   activeOpacity={0.8}

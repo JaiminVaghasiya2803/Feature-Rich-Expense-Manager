@@ -1,24 +1,12 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-  Switch,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert, Switch } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-  Shield, 
-  Lock, 
-  Fingerprint, 
-  Key,
-  ChevronRight,
-  AlertTriangle
-} from 'lucide-react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Shield, Lock, Fingerprint, Key, ChevronRight, AlertTriangle } from 'lucide-react-native';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
+import Header from '../../components/ui/Header';
 import { createUseStyles } from '../../styles/createUseStyles';
 import { getThemeColors } from '../../styles/colors';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -29,19 +17,26 @@ import { getStyles } from './styles';
 const useStyles = createUseStyles(getStyles);
 
 const SecuritySettingsScreen: React.FC = () => {
+  const navigation = useNavigation();
   const { theme } = useTheme();
   const { customTheme } = useCustomTheme();
-  const themeColors = getThemeColors(theme, customTheme || undefined);
-  const styles = useStyles({ theme, customTheme: customTheme || undefined });
-  
-  const { 
-    isEnabled, 
-    authMethod, 
+  const themeColors = getThemeColors(
+    theme === 'unspecified' ? 'light' : theme,
+    customTheme || undefined
+  );
+  const styles = useStyles({
+    theme: theme === 'unspecified' ? 'light' : theme,
+    customTheme: customTheme || undefined,
+  });
+
+  const {
+    isEnabled,
+    authMethod,
     hasBiometric,
     enableSecurity,
     disableSecurity,
     changePassword,
-    lockApp
+    lockApp,
   } = useSecurity();
 
   const [showPasswordSetup, setShowPasswordSetup] = useState(false);
@@ -58,8 +53,8 @@ const SecuritySettingsScreen: React.FC = () => {
         'Are you sure you want to disable app lock? Your data will no longer be protected.',
         [
           { text: 'Cancel', style: 'cancel' },
-          { 
-            text: 'Disable', 
+          {
+            text: 'Disable',
             style: 'destructive',
             onPress: async () => {
               try {
@@ -68,8 +63,8 @@ const SecuritySettingsScreen: React.FC = () => {
               } catch {
                 Alert.alert('Error', 'Failed to disable app lock');
               }
-            }
-          }
+            },
+          },
         ]
       );
     }
@@ -95,14 +90,16 @@ const SecuritySettingsScreen: React.FC = () => {
     try {
       const method: AuthMethod = hasBiometric ? 'both' : 'password';
       await enableSecurity(method, newPassword);
-      
+
       setShowPasswordSetup(false);
       setNewPassword('');
       setConfirmPassword('');
-      
+
       Alert.alert(
-        'Success', 
-        `App lock has been enabled with ${method === 'both' ? 'password and biometric' : 'password'} authentication`
+        'Success',
+        `App lock has been enabled with ${
+          method === 'both' ? 'password and biometric' : 'password'
+        } authentication`
       );
     } catch {
       Alert.alert('Error', 'Failed to enable app lock');
@@ -117,29 +114,33 @@ const SecuritySettingsScreen: React.FC = () => {
       'This will lock the app immediately. You will need to authenticate to unlock it.',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Lock App', 
-          onPress: () => lockApp()
-        }
+        {
+          text: 'Lock App',
+          onPress: () => lockApp(),
+        },
       ]
     );
   };
 
   const getAuthMethodText = () => {
     switch (authMethod) {
-      case 'password': return 'Password only';
-      case 'biometric': return 'Biometric only';
-      case 'both': return 'Password + Biometric';
-      default: return 'None';
+      case 'password':
+        return 'Password only';
+      case 'biometric':
+        return 'Biometric only';
+      case 'both':
+        return 'Password + Biometric';
+      default:
+        return 'None';
     }
   };
 
-  const SettingItem = ({ 
-    icon, 
-    title, 
-    subtitle, 
-    onPress, 
-    rightElement 
+  const SettingItem = ({
+    icon,
+    title,
+    subtitle,
+    onPress,
+    rightElement,
   }: {
     icon: React.ReactNode;
     title: string;
@@ -161,16 +162,17 @@ const SecuritySettingsScreen: React.FC = () => {
     return (
       <View style={styles.container}>
         <SafeAreaView edges={['top']} />
-        
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Set Up App Lock</Text>
-          <Text style={styles.headerSubtitle}>Create a password to secure your app</Text>
-        </View>
+
+        <Header
+          title="Set Up App Lock"
+          subtitle="Create a password to secure your app"
+          onBack={() => setShowPasswordSetup(false)}
+        />
 
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           <Card style={styles.setupCard}>
             <Text style={styles.setupTitle}>Create Password</Text>
-            
+
             <Input
               label="New Password"
               placeholder="Enter a secure password"
@@ -211,6 +213,7 @@ const SecuritySettingsScreen: React.FC = () => {
                 title="Enable App Lock"
                 onPress={handleSetupPassword}
                 loading={isLoading}
+                disabled={!newPassword || !confirmPassword || newPassword !== confirmPassword}
                 style={styles.enableButton}
               />
             </View>
@@ -223,11 +226,12 @@ const SecuritySettingsScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <SafeAreaView edges={['top']} />
-      
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Security Settings</Text>
-        <Text style={styles.headerSubtitle}>Protect your app with authentication</Text>
-      </View>
+
+      <Header
+        title="Security Settings"
+        subtitle="Protect your app with authentication"
+        onBack={() => navigation.goBack()}
+      />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* App Lock Toggle */}
@@ -236,7 +240,10 @@ const SecuritySettingsScreen: React.FC = () => {
           <Card style={styles.sectionCard}>
             <View style={styles.toggleItem}>
               <View style={styles.toggleContent}>
-                <Shield size={24} color={isEnabled ? themeColors.success : themeColors.textSecondary} />
+                <Shield
+                  size={24}
+                  color={isEnabled ? themeColors.success : themeColors.textSecondary}
+                />
                 <View style={styles.toggleText}>
                   <Text style={styles.toggleTitle}>Enable App Lock</Text>
                   <Text style={styles.toggleSubtitle}>
@@ -247,8 +254,12 @@ const SecuritySettingsScreen: React.FC = () => {
               <Switch
                 value={isEnabled}
                 onValueChange={handleToggleSecurity}
-                trackColor={{ false: themeColors.borderMedium, true: themeColors.success + '40' }}
-                thumbColor={isEnabled ? themeColors.success : themeColors.textTertiary}
+                trackColor={{
+                  false: themeColors.borderMedium,
+                  true: themeColors.success + '40',
+                }}
+                thumbColor={isEnabled ? themeColors.success : themeColors.backgroundSecondary}
+                ios_backgroundColor={themeColors.borderMedium}
               />
             </View>
           </Card>
@@ -265,9 +276,9 @@ const SecuritySettingsScreen: React.FC = () => {
                   title="Authentication Method"
                   subtitle={getAuthMethodText()}
                 />
-                
+
                 <View style={styles.separator} />
-                
+
                 <SettingItem
                   icon={<Lock size={24} color={themeColors.warning} />}
                   title="Change Password"
@@ -278,16 +289,16 @@ const SecuritySettingsScreen: React.FC = () => {
                       'Enter your new password:',
                       [
                         { text: 'Cancel', style: 'cancel' },
-                        { 
+                        {
                           text: 'Change',
-                          onPress: (password) => {
+                          onPress: (password?: string) => {
                             if (password && password.length >= 4) {
                               changePassword(password);
                             } else {
                               Alert.alert('Error', 'Password must be at least 4 characters');
                             }
-                          }
-                        }
+                          },
+                        },
                       ],
                       'secure-text'
                     );
@@ -314,10 +325,9 @@ const SecuritySettingsScreen: React.FC = () => {
               <Card style={styles.infoCard}>
                 <Text style={styles.infoTitle}>🔒 Security Information</Text>
                 <Text style={styles.infoText}>
-                  • App locks automatically when backgrounded for 30 seconds{'\n'}
-                  • Failed password attempts are limited to 5{'\n'}
-                  • Biometric authentication is available when supported{'\n'}
-                  • Your password is securely stored on device
+                  • App locks automatically when backgrounded for 30 seconds{'\n'}• Failed password
+                  attempts are limited to 5{'\n'}• Biometric authentication is available when
+                  supported{'\n'}• Your password is securely stored on device
                 </Text>
               </Card>
             </View>

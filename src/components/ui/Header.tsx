@@ -1,5 +1,12 @@
 import React, { useEffect, useRef } from 'react';
-import {  Text, StyleSheet, TouchableOpacity, ViewStyle, Animated, InteractionManager } from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ViewStyle,
+  Animated,
+  InteractionManager,
+} from 'react-native';
 import { ArrowLeft } from 'lucide-react-native';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getThemeColors } from '../../styles/colors';
@@ -63,7 +70,7 @@ const Header: React.FC<HeaderProps> = ({
     flexDirection: 'row' as const,
     alignItems: 'center' as const,
     paddingHorizontal: 24,
-    paddingVertical: 24,
+    paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: themeColors.borderLight,
     backgroundColor: backgroundColor || themeColors.surface,
@@ -93,16 +100,13 @@ const Header: React.FC<HeaderProps> = ({
   const textStyles = getTextStyles();
 
   return (
-    <Animated.View 
+    <Animated.View
       style={[
         getHeaderStyle(),
         style,
         animated && {
           opacity: fadeAnim,
-          transform: [
-            { translateY: slideAnim },
-            { scale: scaleAnim },
-          ],
+          transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
         },
       ]}
     >
@@ -125,8 +129,8 @@ const Header: React.FC<HeaderProps> = ({
           </TouchableOpacity>
         </Animated.View>
       )}
-      
-      <Animated.View 
+
+      <Animated.View
         style={[
           styles.headerContent,
           animated && {
@@ -138,9 +142,9 @@ const Header: React.FC<HeaderProps> = ({
         <Text style={textStyles.title}>{title}</Text>
         {subtitle && <Text style={textStyles.subtitle}>{subtitle}</Text>}
       </Animated.View>
-      
+
       {rightComponent && (
-        <Animated.View 
+        <Animated.View
           style={[
             styles.rightComponent,
             animated && {

@@ -1,12 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Modal,
-  ScrollView,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView } from 'react-native';
 import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { theme } from '../../constants/theme';
 
@@ -26,7 +19,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
   containerStyle,
 }) => {
   const [showPicker, setShowPicker] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState(new Date(value.getFullYear(), value.getMonth(), 1));
+  const [currentMonth, setCurrentMonth] = useState(
+    new Date(value.getFullYear(), value.getMonth(), 1)
+  );
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', {
@@ -41,11 +36,11 @@ const DatePicker: React.FC<DatePickerProps> = ({
     const today = new Date();
     const diffTime = date.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return 'Today';
     if (diffDays === -1) return 'Yesterday';
     if (diffDays === 1) return 'Tomorrow';
-    
+
     return formatDate(date);
   };
 
@@ -67,55 +62,65 @@ const DatePicker: React.FC<DatePickerProps> = ({
   const generateCalendarDays = () => {
     const year = currentMonth.getFullYear();
     const month = currentMonth.getMonth();
-    
+
     // First day of the month
     const firstDay = new Date(year, month, 1);
     // Last day of the month
     const lastDay = new Date(year, month + 1, 0);
-    
+
     // Start from the first day of the week containing the first day of the month
     const startDate = new Date(firstDay);
     startDate.setDate(firstDay.getDate() - firstDay.getDay());
-    
+
     // End at the last day of the week containing the last day of the month
     const endDate = new Date(lastDay);
     endDate.setDate(lastDay.getDate() + (6 - lastDay.getDay()));
-    
+
     const days = [];
     const currentDate = new Date(startDate);
-    
+
     while (currentDate <= endDate) {
       days.push(new Date(currentDate));
       currentDate.setDate(currentDate.getDate() + 1);
     }
-    
+
     return days;
   };
 
   const calendarDays = generateCalendarDays();
   const today = new Date();
   const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   // Quick date options
-  const quickOptions = useMemo(() => [
-    { label: 'Today', date: new Date() },
-    { label: 'Yesterday', date: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-    { label: 'Tomorrow', date: new Date(Date.now() + 24 * 60 * 60 * 1000) },
-  ], []);
+  const quickOptions = useMemo(
+    () => [
+      { label: 'Today', date: new Date() },
+      { label: 'Yesterday', date: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+      { label: 'Tomorrow', date: new Date(Date.now() + 24 * 60 * 60 * 1000) },
+    ],
+    []
+  );
 
   return (
     <View style={[styles.container, containerStyle]}>
       {label && <Text style={styles.label}>{label}</Text>}
-      
+
       <TouchableOpacity
-        style={[
-          styles.dateButton,
-          error && styles.errorBorder,
-        ]}
+        style={[styles.dateButton, error && styles.errorBorder]}
         onPress={() => setShowPicker(true)}
         activeOpacity={0.7}
       >
@@ -123,7 +128,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
         <Text style={styles.dateText}>{getDateLabel(value)}</Text>
         <Text style={styles.fullDate}>{formatDate(value)}</Text>
       </TouchableOpacity>
-      
+
       {error && <Text style={styles.errorText}>{error}</Text>}
 
       <Modal
@@ -136,10 +141,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Select Date</Text>
-              <TouchableOpacity
-                onPress={() => setShowPicker(false)}
-                style={styles.closeButton}
-              >
+              <TouchableOpacity onPress={() => setShowPicker(false)} style={styles.closeButton}>
                 <Text style={styles.closeButtonText}>Done</Text>
               </TouchableOpacity>
             </View>
@@ -149,12 +151,13 @@ const DatePicker: React.FC<DatePickerProps> = ({
               <View style={styles.quickOptionsContainer}>
                 <Text style={styles.sectionTitle}>Quick Select</Text>
                 <View style={styles.quickOptions}>
-                  {quickOptions.map((option, _index) => (
+                  {quickOptions.map((option, index) => (
                     <TouchableOpacity
                       key={index}
                       style={[
                         styles.quickOption,
-                        value.toDateString() === option.date.toDateString() && styles.selectedQuickOption,
+                        value.toDateString() === option.date.toDateString() &&
+                          styles.selectedQuickOption,
                       ]}
                       onPress={() => handleDateSelect(option.date)}
                       activeOpacity={0.7}
@@ -162,7 +165,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
                       <Text
                         style={[
                           styles.quickOptionText,
-                          value.toDateString() === option.date.toDateString() && styles.selectedQuickOptionText,
+                          value.toDateString() === option.date.toDateString() &&
+                            styles.selectedQuickOptionText,
                         ]}
                       >
                         {option.label}
@@ -175,7 +179,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
               {/* Calendar */}
               <View style={styles.calendarContainer}>
                 <Text style={styles.sectionTitle}>Calendar</Text>
-                
+
                 {/* Month Navigation */}
                 <View style={styles.monthHeader}>
                   <TouchableOpacity
@@ -185,11 +189,11 @@ const DatePicker: React.FC<DatePickerProps> = ({
                   >
                     <ChevronLeft size={20} color={theme.colors.text.primary} />
                   </TouchableOpacity>
-                  
+
                   <Text style={styles.monthTitle}>
                     {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
                   </Text>
-                  
+
                   <TouchableOpacity
                     onPress={() => navigateMonth('next')}
                     style={styles.navButton}
@@ -201,7 +205,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
                 {/* Day Headers */}
                 <View style={styles.dayHeaders}>
-                  {dayNames.map((day) => (
+                  {dayNames.map(day => (
                     <Text key={day} style={styles.dayHeader}>
                       {day}
                     </Text>
@@ -210,12 +214,12 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
                 {/* Calendar Grid */}
                 <View style={styles.calendarGrid}>
-                  {calendarDays.map((date, _index) => {
+                  {calendarDays.map((date, index) => {
                     const isCurrentMonth = date.getMonth() === currentMonth.getMonth();
                     const isToday = date.toDateString() === today.toDateString();
                     const isSelected = date.toDateString() === value.toDateString();
                     const isPast = date < today && !isToday;
-                    
+
                     return (
                       <TouchableOpacity
                         key={index}
@@ -332,7 +336,7 @@ const styles = StyleSheet.create({
     color: theme.colors.text.primary,
     marginBottom: theme.spacing.md,
   },
-  
+
   // Quick Options
   quickOptionsContainer: {
     paddingHorizontal: theme.spacing.lg,
@@ -367,7 +371,7 @@ const styles = StyleSheet.create({
     color: theme.colors.primary,
     fontWeight: '600',
   },
-  
+
   // Calendar
   calendarContainer: {
     paddingHorizontal: theme.spacing.lg,

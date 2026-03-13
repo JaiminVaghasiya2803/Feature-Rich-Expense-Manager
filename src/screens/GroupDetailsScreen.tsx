@@ -1,19 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-  ArrowLeft, 
-  Plus, 
-  Users, 
-  Receipt, 
+import {
+  ArrowLeft,
+  Plus,
+  Users,
+  Receipt,
   TrendingUp,
   Calendar,
-  DollarSign
+  DollarSign,
 } from 'lucide-react-native';
 import { useTheme } from '../contexts/ThemeContext';
 import { getThemeColors } from '../styles/colors';
@@ -39,7 +34,7 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
   const { theme } = useTheme();
   const themeColors = getThemeColors(theme);
   const styles = useStyles({ theme });
-  
+
   const [expenses, setExpenses] = useState<BillExpense[]>([]);
   const [balances, setBalances] = useState<Balance[]>([]);
   const [settlements, setSettlements] = useState<Settlement[]>([]);
@@ -56,13 +51,13 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
         id: '1',
         title: 'Dinner at Restaurant',
         description: 'Indian restaurant',
-        amount: 1200.00,
+        amount: 1200.0,
         currency: 'INR',
         paidBy: group.members[0],
         splitType: 'equal',
         splitPersons: group.members.map(m => ({
           ...m,
-          amount: 400.00,
+          amount: 400.0,
           percentage: 33.33,
           isSelected: true,
         })),
@@ -73,14 +68,14 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
         id: '2',
         title: 'Grocery Shopping',
         description: 'Weekly groceries',
-        amount: 850.00,
+        amount: 850.0,
         currency: 'INR',
         paidBy: group.members[1],
         splitType: 'percentage',
         splitPersons: [
-          { ...group.members[0], amount: 425.00, percentage: 50, isSelected: true },
-          { ...group.members[1], amount: 255.00, percentage: 30, isSelected: true },
-          { ...group.members[2], amount: 170.00, percentage: 20, isSelected: true },
+          { ...group.members[0], amount: 425.0, percentage: 50, isSelected: true },
+          { ...group.members[1], amount: 255.0, percentage: 30, isSelected: true },
+          { ...group.members[2], amount: 170.0, percentage: 20, isSelected: true },
         ],
         date: new Date('2024-03-09'),
         groupId: group.id,
@@ -93,7 +88,7 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const calculateBalances = (expensesList: BillExpense[]) => {
     const memberBalances: { [key: string]: number } = {};
-    
+
     // Initialize balances
     group.members.forEach(member => {
       memberBalances[member.id] = 0;
@@ -103,7 +98,7 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
     expensesList.forEach(expense => {
       // Add what the payer paid
       memberBalances[expense.paidBy.id] += expense.amount;
-      
+
       // Subtract what each person owes
       expense.splitPersons.forEach(splitPerson => {
         if (splitPerson.isSelected) {
@@ -125,16 +120,18 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const calculateSettlements = (balancesList: Balance[]) => {
     const settlements: Settlement[] = [];
-    const debtors = balancesList.filter(b => b.balance < 0).sort((a, _b) => a.balance - b.balance);
-    const creditors = balancesList.filter(b => b.balance > 0).sort((a, _b) => b.balance - a.balance);
+    const debtors = balancesList.filter(b => b.balance < 0).sort((a, b) => a.balance - b.balance);
+    const creditors = balancesList.filter(b => b.balance > 0).sort((a, b) => b.balance - a.balance);
 
-    let i = 0, j = 0;
+    let i = 0,
+      j = 0;
     while (i < debtors.length && j < creditors.length) {
       const debt = Math.abs(debtors[i].balance);
       const credit = creditors[j].balance;
       const amount = Math.min(debt, credit);
 
-      if (amount > 0.01) { // Avoid tiny amounts
+      if (amount > 0.01) {
+        // Avoid tiny amounts
         settlements.push({
           from: debtors[i].person,
           to: creditors[j].person,
@@ -186,13 +183,13 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
           <Text style={styles.expenseSplitType}>{expense.splitType}</Text>
         </View>
       </View>
-      
+
       <View style={styles.expenseSplit}>
         {expense.splitPersons.map(person => (
           <View key={person.id} style={styles.splitPersonItem}>
             <View style={[styles.splitPersonAvatar, { backgroundColor: person.color }]}>
               <Text style={styles.splitPersonInitial}>
-                {person.name.charAt(0).toUpperCase()}
+                {person?.name?.charAt(0)?.toUpperCase()}
               </Text>
             </View>
             <Text style={styles.splitPersonAmount}>₹{person.amount.toFixed(2)}</Text>
@@ -206,17 +203,17 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
     <View style={styles.balanceItem}>
       <View style={styles.balancePersonInfo}>
         <View style={[styles.balanceAvatar, { backgroundColor: balance.person.color }]}>
-          <Text style={styles.balanceInitial}>
-            {balance.person.name.charAt(0).toUpperCase()}
-          </Text>
+          <Text style={styles.balanceInitial}>{balance.person.name.charAt(0).toUpperCase()}</Text>
         </View>
         <Text style={styles.balanceName}>{balance.person.name}</Text>
       </View>
       <View style={styles.balanceAmount}>
-        <Text style={[
-          styles.balanceAmountText,
-          { color: balance.balance >= 0 ? themeColors.secondary : themeColors.danger }
-        ]}>
+        <Text
+          style={[
+            styles.balanceAmountText,
+            { color: balance.balance >= 0 ? themeColors.secondary : themeColors.danger },
+          ]}
+        >
           {balance.balance >= 0 ? '+' : ''}₹{balance.balance.toFixed(2)}
         </Text>
         <Text style={styles.balanceStatus}>
@@ -250,39 +247,31 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
     </Card>
   );
 
-  const TabButton = ({ 
-    tab, 
-    title, 
-    icon: Icon 
-  }: { 
-    tab: 'expenses' | 'balances' | 'settle'; 
-    title: string; 
+  const TabButton = ({
+    tab,
+    title,
+    icon: Icon,
+  }: {
+    tab: 'expenses' | 'balances' | 'settle';
+    title: string;
     icon: unknown;
   }) => (
     <TouchableOpacity
       style={[
-        styles.tabButton, 
-        activeTab === tab && [styles.activeTab, { borderBottomColor: themeColors.primary }]
+        styles.tabButton,
+        activeTab === tab && [styles.activeTab, { borderBottomColor: themeColors.primary }],
       ]}
       onPress={() => setActiveTab(tab)}
     >
-      <Icon 
-        size={20} 
-        color={activeTab === tab ? themeColors.primary : themeColors.textSecondary} 
-      />
-      <Text style={[
-        styles.tabText,
-        activeTab === tab && styles.activeTabText
-      ]}>
-        {title}
-      </Text>
+      <Icon size={20} color={activeTab === tab ? themeColors.primary : themeColors.textSecondary} />
+      <Text style={[styles.tabText, activeTab === tab && styles.activeTabText]}>{title}</Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
       <SafeAreaView edges={['top']} />
-      
+
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <ArrowLeft size={24} color={themeColors.textPrimary} />
@@ -307,7 +296,7 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
             <View style={styles.summaryItem}>
               <DollarSign size={20} color={themeColors.secondary} />
               <Text style={styles.summaryValue}>
-                ₹{expenses.reduce((sum, _e) => sum + e.amount, 0).toFixed(2)}
+                ₹{expenses.reduce((sum, e) => sum + e.amount, 0).toFixed(2)}
               </Text>
               <Text style={styles.summaryLabel}>Total</Text>
             </View>
@@ -330,21 +319,13 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
         {activeTab === 'expenses' && (
           <View style={styles.expensesList}>
             {expenses.length > 0 ? (
-              expenses.map(expense => (
-                <ExpenseItem key={expense.id} expense={expense} />
-              ))
+              expenses.map(expense => <ExpenseItem key={expense.id} expense={expense} />)
             ) : (
               <Card style={styles.emptyState}>
                 <Receipt size={48} color={themeColors.textTertiary} />
                 <Text style={styles.emptyTitle}>No expenses yet</Text>
-                <Text style={styles.emptySubtitle}>
-                  Add your first expense to start tracking
-                </Text>
-                <Button
-                  title="Add Expense"
-                  onPress={addExpense}
-                  style={styles.addButton}
-                />
+                <Text style={styles.emptySubtitle}>Add your first expense to start tracking</Text>
+                <Button title="Add Expense" onPress={addExpense} style={styles.addButton} />
               </Card>
             )}
           </View>
@@ -361,16 +342,14 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
         {activeTab === 'settle' && (
           <View style={styles.settleContent}>
             {settlements.length > 0 ? (
-              settlements.map((settlement, _index) => (
+              settlements.map((settlement, index) => (
                 <SettlementItem key={index} settlement={settlement} />
               ))
             ) : (
               <Card style={styles.emptyState}>
                 <Users size={48} color={themeColors.textTertiary} />
                 <Text style={styles.emptyTitle}>All settled up!</Text>
-                <Text style={styles.emptySubtitle}>
-                  Everyone's balances are even
-                </Text>
+                <Text style={styles.emptySubtitle}>Everyone's balances are even</Text>
               </Card>
             )}
           </View>
@@ -379,11 +358,7 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
 
       {activeTab === 'expenses' && (
         <View style={styles.footer}>
-          <Button
-            title="Add Expense"
-            onPress={addExpense}
-            style={styles.addExpenseButton}
-          />
+          <Button title="Add Expense" onPress={addExpense} style={styles.addExpenseButton} />
         </View>
       )}
     </View>

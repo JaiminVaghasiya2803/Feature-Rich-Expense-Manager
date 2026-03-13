@@ -1,21 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-  TextInput,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-  ArrowLeft, 
-  Users, 
-  Percent, 
-  Calculator,
-  Check,
-  IndianRupee
-} from 'lucide-react-native';
+import { ArrowLeft, Users, Percent, Calculator, Check, IndianRupee } from 'lucide-react-native';
 import { Person, SplitPerson, SplitType, BillExpense } from '../../types/billSplit';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
@@ -41,9 +27,9 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
   const { theme } = useTheme();
   const themeColors = getThemeColors(theme);
   const styles = useStyles({ theme });
-  
+
   const { groupMembers, groupId } = route.params;
-  
+
   const [title, setTitle] = useState('');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
@@ -73,7 +59,7 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
   const calculateSplits = () => {
     const totalAmount = parseFloat(amount) || 0;
     const selectedPersons = splitPersons.filter(p => p.isSelected);
-    
+
     if (selectedPersons.length === 0) return;
 
     let updatedSplitPersons = [...splitPersons];
@@ -129,8 +115,8 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const normalizePercentages = () => {
     const selectedPersons = splitPersons.filter(p => p.isSelected);
-    const totalPercentage = selectedPersons.reduce((sum, _p) => sum + p.percentage, 0);
-    
+    const totalPercentage = selectedPersons.reduce((sum, p) => sum + p.percentage, 0);
+
     if (totalPercentage !== 100 && selectedPersons.length > 0) {
       const factor = 100 / totalPercentage;
       const updatedSplitPersons = splitPersons.map(person => ({
@@ -142,22 +128,25 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const getTotalSplitAmount = () => {
-    return splitPersons.reduce((sum, _person) => sum + (person.isSelected ? person.amount : 0), 0);
+    return splitPersons.reduce((sum, person) => sum + (person.isSelected ? person.amount : 0), 0);
   };
 
   const getTotalPercentage = () => {
-    return splitPersons.reduce((sum, _person) => sum + (person.isSelected ? person.percentage : 0), 0);
+    return splitPersons.reduce(
+      (sum, person) => sum + (person.isSelected ? person.percentage : 0),
+      0
+    );
   };
 
   const isValidSplit = () => {
     const totalAmount = parseFloat(amount) || 0;
     const splitTotal = getTotalSplitAmount();
     const percentageTotal = getTotalPercentage();
-    
+
     if (splitType === 'percentage') {
       return Math.abs(percentageTotal - 100) < 0.01;
     }
-    
+
     return Math.abs(splitTotal - totalAmount) < 0.01;
   };
 
@@ -182,9 +171,9 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
 
     // Save expense logic here
     console.log('Saving expense:', expense);
-    
+
     Alert.alert('Success', 'Expense added successfully!', [
-      { text: 'OK', onPress: () => navigation.goBack() }
+      { text: 'OK', onPress: () => navigation.goBack() },
     ]);
   };
 
@@ -196,28 +185,41 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
           style={[styles.splitTypeButton, splitType === 'equal' && styles.activeSplitType]}
           onPress={() => setSplitType('equal')}
         >
-          <Users size={20} color={splitType === 'equal' ? themeColors.textInverse : themeColors.textSecondary} />
+          <Users
+            size={20}
+            color={splitType === 'equal' ? themeColors.textInverse : themeColors.textSecondary}
+          />
           <Text style={[styles.splitTypeText, splitType === 'equal' && styles.activeSplitTypeText]}>
             Equal
           </Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           style={[styles.splitTypeButton, splitType === 'percentage' && styles.activeSplitType]}
           onPress={() => setSplitType('percentage')}
         >
-          <Percent size={20} color={splitType === 'percentage' ? themeColors.textInverse : themeColors.textSecondary} />
-          <Text style={[styles.splitTypeText, splitType === 'percentage' && styles.activeSplitTypeText]}>
+          <Percent
+            size={20}
+            color={splitType === 'percentage' ? themeColors.textInverse : themeColors.textSecondary}
+          />
+          <Text
+            style={[styles.splitTypeText, splitType === 'percentage' && styles.activeSplitTypeText]}
+          >
             Percentage
           </Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           style={[styles.splitTypeButton, splitType === 'amount' && styles.activeSplitType]}
           onPress={() => setSplitType('amount')}
         >
-          <IndianRupee size={20} color={splitType === 'amount' ? themeColors.textInverse : themeColors.textSecondary} />
-          <Text style={[styles.splitTypeText, splitType === 'amount' && styles.activeSplitTypeText]}>
+          <IndianRupee
+            size={20}
+            color={splitType === 'amount' ? themeColors.textInverse : themeColors.textSecondary}
+          />
+          <Text
+            style={[styles.splitTypeText, splitType === 'amount' && styles.activeSplitTypeText]}
+          >
             Amount
           </Text>
         </TouchableOpacity>
@@ -234,7 +236,9 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
         <View style={[styles.checkbox, person.isSelected && styles.checkedBox]}>
           {person.isSelected && <Check size={16} color={themeColors.textInverse} />}
         </View>
-        <View style={[styles.personAvatar, { backgroundColor: person.color || themeColors.primary }]}>
+        <View
+          style={[styles.personAvatar, { backgroundColor: person.color || themeColors.primary }]}
+        >
           <Text style={styles.personInitial}>{person.name.charAt(0).toUpperCase()}</Text>
         </View>
         <Text style={styles.personName}>{person.name}</Text>
@@ -247,7 +251,7 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
               <TextInput
                 style={styles.splitInput}
                 value={person.percentage.toFixed(1)}
-                onChangeText={(text) => updatePersonPercentage(person.id, parseFloat(text) || 0)}
+                onChangeText={text => updatePersonPercentage(person.id, parseFloat(text) || 0)}
                 keyboardType="numeric"
                 placeholder="0"
                 placeholderTextColor={themeColors.textTertiary}
@@ -255,21 +259,21 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
               <Text style={styles.inputSuffix}>%</Text>
             </View>
           )}
-          
+
           {splitType === 'amount' && (
             <View style={styles.inputContainer}>
               <Text style={styles.inputPrefix}>₹</Text>
               <TextInput
                 style={styles.splitInput}
                 value={person.amount.toFixed(2)}
-                onChangeText={(text) => updatePersonAmount(person.id, parseFloat(text) || 0)}
+                onChangeText={text => updatePersonAmount(person.id, parseFloat(text) || 0)}
                 keyboardType="numeric"
                 placeholder="0.00"
                 placeholderTextColor={themeColors.textTertiary}
               />
             </View>
           )}
-          
+
           {splitType === 'equal' && (
             <View style={styles.equalAmount}>
               <Text style={styles.equalAmountText}>₹{person.amount.toFixed(2)}</Text>
@@ -283,7 +287,7 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <SafeAreaView edges={['top']} />
-      
+
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <ArrowLeft size={24} color={themeColors.textPrimary} />
@@ -301,7 +305,7 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
             placeholder="Enter expense title"
             style={styles.input}
           />
-          
+
           <View style={styles.amountInputContainer}>
             <Text style={styles.amountLabel}>Amount</Text>
             <View style={styles.amountInput}>
@@ -316,7 +320,7 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
               />
             </View>
           </View>
-          
+
           <Input
             label="Description (Optional)"
             value={description}
@@ -331,16 +335,23 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
           <Text style={styles.cardTitle}>Paid By</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.paidByList}>
-              {groupMembers.map((member) => (
+              {groupMembers.map(member => (
                 <TouchableOpacity
                   key={member.id}
                   style={[styles.paidByItem, paidBy.id === member.id && styles.activePaidBy]}
                   onPress={() => setPaidBy(member)}
                 >
-                  <View style={[styles.memberAvatar, { backgroundColor: member.color || themeColors.primary }]}>
+                  <View
+                    style={[
+                      styles.memberAvatar,
+                      { backgroundColor: member.color || themeColors.primary },
+                    ]}
+                  >
                     <Text style={styles.memberInitial}>{member.name.charAt(0).toUpperCase()}</Text>
                   </View>
-                  <Text style={[styles.memberName, paidBy.id === member.id && styles.activeMemberName]}>
+                  <Text
+                    style={[styles.memberName, paidBy.id === member.id && styles.activeMemberName]}
+                  >
                     {member.name}
                   </Text>
                 </TouchableOpacity>
@@ -360,20 +371,20 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
               </TouchableOpacity>
             )}
           </View>
-          
-          {splitPersons.map((person) => (
+
+          {splitPersons.map(person => (
             <PersonSplitItem key={person?.id} person={person} />
           ))}
-          
+
           <View style={styles.splitSummary}>
             <Text style={styles.summaryText}>
-              Total: ₹{getTotalSplitAmount().toFixed(2)} 
+              Total: ₹{getTotalSplitAmount().toFixed(2)}
               {splitType === 'percentage' && ` (${getTotalPercentage().toFixed(1)}%)`}
             </Text>
             {!isValidSplit() && (
               <Text style={styles.errorText}>
-                {splitType === 'percentage' 
-                  ? 'Percentages must total 100%' 
+                {splitType === 'percentage'
+                  ? 'Percentages must total 100%'
                   : 'Split amounts must equal total amount'}
               </Text>
             )}

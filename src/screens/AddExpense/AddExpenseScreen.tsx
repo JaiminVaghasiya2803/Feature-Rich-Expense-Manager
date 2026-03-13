@@ -1,10 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import {
-  View,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { FileText, Tag, Users, IndianRupee } from 'lucide-react-native';
@@ -30,7 +25,7 @@ const AddExpenseScreen = () => {
   const { theme } = useTheme();
   const themeColors = getThemeColors(theme);
   const styles = useStyles({ theme });
-  
+
   const navigation = useNavigation();
   const mutation = useAddExpense();
   const { data: groupsData } = useGroups();
@@ -55,7 +50,7 @@ const AddExpenseScreen = () => {
 
   // Memoized groups data
   const groups: ExpenseGroup[] = useMemo(() => {
-    return groupsData?.pages.flat() ?? [];
+    return groupsData?.pages?.flat() ?? [];
   }, [groupsData]);
 
   // Memoized form validation
@@ -66,17 +61,17 @@ const AddExpenseScreen = () => {
   // Form validation function
   const validateForm = () => {
     const newErrors: { title?: string; amount?: string } = {};
-    
+
     if (!title.trim()) {
       newErrors.title = 'Title is required';
     }
-    
+
     if (!amount.trim()) {
       newErrors.amount = 'Amount is required';
     } else if (isNaN(Number(amount)) || Number(amount) <= 0) {
       newErrors.amount = 'Please enter a valid amount';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -118,15 +113,14 @@ const AddExpenseScreen = () => {
   return (
     <View style={styles.container}>
       <SafeAreaView edges={['top']} />
-      
+
       <Header
         title="Add New Expense"
         subtitle="Track your spending"
         onBack={() => navigation.goBack()}
       />
-      
+
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        
         <Card style={styles.formCard}>
           <Input
             label="Expense Title"
@@ -147,18 +141,14 @@ const AddExpenseScreen = () => {
             leftIcon={<IndianRupee size={20} color={themeColors.textTertiary} />}
           />
 
-          <DatePicker
-            label="Date"
-            value={selectedDate}
-            onDateChange={handleDateChange}
-          />
-          
+          <DatePicker label="Date" value={selectedDate} onDateChange={handleDateChange} />
+
           <Dropdown
             label="Category"
             placeholder="Select a category"
             options={categoryOptions}
             value={selectedCategory}
-            onSelect={(value) => setSelectedCategory(value as ExpenseCategory)}
+            onSelect={value => setSelectedCategory(value as ExpenseCategory)}
             leftIcon={<Tag size={20} color={themeColors.textTertiary} />}
           />
 
@@ -169,26 +159,25 @@ const AddExpenseScreen = () => {
               </Text>
               <View style={styles.groupGrid}>
                 <TouchableOpacity
-                  style={[
-                    styles.groupItem,
-                    !selectedGroupId && styles.selectedGroup,
-                  ]}
+                  style={[styles.groupItem, !selectedGroupId && styles.selectedGroup]}
                   onPress={() => setSelectedGroupId(undefined)}
                   activeOpacity={0.7}
                 >
-                  <View style={[styles.groupColorIndicator, { backgroundColor: themeColors.borderMedium }]} />
+                  <View
+                    style={[
+                      styles.groupColorIndicator,
+                      { backgroundColor: themeColors.borderMedium },
+                    ]}
+                  />
                   <Text style={[styles.groupText, !selectedGroupId && styles.selectedGroupText]}>
                     No Group
                   </Text>
                 </TouchableOpacity>
-                
-                {groups.map((group) => (
+
+                {groups.map(group => (
                   <TouchableOpacity
                     key={group.id}
-                    style={[
-                      styles.groupItem,
-                      selectedGroupId === group.id && styles.selectedGroup,
-                    ]}
+                    style={[styles.groupItem, selectedGroupId === group.id && styles.selectedGroup]}
                     onPress={() => setSelectedGroupId(group.id)}
                     activeOpacity={0.7}
                   >

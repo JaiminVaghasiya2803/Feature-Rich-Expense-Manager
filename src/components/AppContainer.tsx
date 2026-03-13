@@ -18,7 +18,14 @@ const AppContainer = () => {
   const { isLocked, isEnabled } = useSecurity();
 
   // Debug logging
-  console.log('🏠 AppContainer render - showSplash:', showSplash, 'isEnabled:', isEnabled, 'isLocked:', isLocked);
+  console.log(
+    '🏠 AppContainer render - showSplash:',
+    showSplash,
+    'isEnabled:',
+    isEnabled,
+    'isLocked:',
+    isLocked
+  );
 
   // Show splash screen first
   if (showSplash) {
@@ -37,14 +44,14 @@ const AppContainer = () => {
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right']}>
       <NavigationContainer>
-        <AppNavigator 
+        <AppNavigator
           tabs={currentConfig}
           initialRouteName={currentConfig[0]?.name}
           customTabBar={false}
           tabBarStyle="default"
         />
       </NavigationContainer>
-      <AppLockDebugPanel />
+      {__DEV__ && <AppLockDebugPanel />}
     </SafeAreaView>
   );
 };

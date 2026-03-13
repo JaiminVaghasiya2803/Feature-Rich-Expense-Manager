@@ -1,14 +1,10 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-   Dimensions,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { theme } from '../../constants/theme';
+import { useTheme } from '../../contexts/ThemeContext';
+import { useCustomTheme } from '../../contexts/CustomThemeContext';
+import { getThemeColors } from '../../styles/colors';
 
 const { width } = Dimensions.get('window');
 
@@ -25,20 +21,91 @@ const CustomBottomTabBar: React.FC<CustomBottomTabBarProps> = ({
   navigation,
   showLabels = true,
   tabBarHeight = 80,
-  activeBackgroundColor = theme.colors.primary,
+  activeBackgroundColor,
   inactiveBackgroundColor = 'transparent',
 }) => {
+  const { theme } = useTheme();
+  const { customTheme } = useCustomTheme();
+  const themeColors = getThemeColors(theme, customTheme || undefined);
   const insets = useSafeAreaInsets();
   const tabWidth = width / state.routes.length;
 
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: themeColors.surface,
+      borderTopWidth: 1,
+      borderTopColor: themeColors.borderLight,
+      height: tabBarHeight + insets.bottom,
+    },
+    tabBar: {
+      flexDirection: 'row',
+      height: tabBarHeight,
+    },
+    tab: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 12,
+      marginHorizontal: 4,
+      marginVertical: 8,
+      borderRadius: 16,
+    },
+    activeTab: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.05,
+      shadowRadius: 2,
+      elevation: 2,
+    },
+    iconContainer: {
+      position: 'relative',
+      marginBottom: 6,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 24,
+    },
+    badge: {
+      position: 'absolute',
+      top: -8,
+      right: -12,
+      backgroundColor: themeColors.danger,
+      borderRadius: 10,
+      minWidth: 20,
+      height: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 4,
+    },
+    badgeText: {
+      color: themeColors.textInverse,
+      fontSize: 10,
+      fontWeight: '600',
+    },
+    label: {
+      fontSize: 11,
+      fontWeight: '500',
+      textAlign: 'center',
+    },
+    bottomSafeArea: {
+      height: insets.bottom,
+    },
+  });
+
   return (
-    <View style={[styles.container, { height: tabBarHeight + insets.bottom }]}>
+    <View style={styles.container}>
       <View style={styles.tabBar}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
           const label =
             options.tabBarLabel !== undefined
-              ? options.tabBarLabel
+              ? typeof options.tabBarLabel === 'string'
+                ? options.tabBarLabel
+                : options.tabBarLabel({
+                    focused: state.index === index,
+                    color: '',
+                    position: 'below-icon',
+                    children: '',
+                  })
               : options.title !== undefined
               ? options.title
               : route.name;
@@ -67,7 +134,7 @@ const CustomBottomTabBar: React.FC<CustomBottomTabBarProps> = ({
           // Get icon from options
           const iconComponent = options.tabBarIcon?.({
             focused: isFocused,
-            color: isFocused ? theme.colors.text.inverse : theme.colors.text.secondary,
+            color: isFocused ? themeColors.textInverse : themeColors.textSecondary,
             size: 24,
           });
 
@@ -80,14 +147,15 @@ const CustomBottomTabBar: React.FC<CustomBottomTabBarProps> = ({
               accessibilityRole="button"
               accessibilityState={isFocused ? { selected: true } : {}}
               accessibilityLabel={options.tabBarAccessibilityLabel}
-              testID={options.tabBarTestID}
               onPress={onPress}
               onLongPress={onLongPress}
               style={[
                 styles.tab,
                 {
                   width: tabWidth,
-                  backgroundColor: isFocused ? activeBackgroundColor : inactiveBackgroundColor,
+                  backgroundColor: isFocused
+                    ? activeBackgroundColor || themeColors.primary
+                    : inactiveBackgroundColor,
                 },
                 isFocused && styles.activeTab,
               ]}
@@ -103,82 +171,27 @@ const CustomBottomTabBar: React.FC<CustomBottomTabBarProps> = ({
                   </View>
                 )}
               </View>
-              
+
               {showLabels && (
                 <Text
                   style={[
                     styles.label,
                     {
-                      color: isFocused 
-                        ? theme.colors.text.inverse 
-                        : theme.colors.text.secondary,
+                      color: isFocused ? themeColors.textInverse : themeColors.textSecondary,
                     },
                   ]}
                   numberOfLines={1}
                 >
-                  {label}
+                  {typeof label === 'string' ? label : route.name}
                 </Text>
               )}
             </TouchableOpacity>
           );
         })}
       </View>
-      <View style={{ height: insets.bottom }} />
+      <View style={styles.bottomSafeArea} />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: theme.colors.surface,
-    borderTopWidth: 1,
-    borderTopColor: theme.colors.border,
-  },
-  tabBar: {
-    flexDirection: 'row',
-    height: 80,
-  },
-  tab: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    marginHorizontal: 4,
-    marginVertical: 8,
-    borderRadius: theme.borderRadius.lg,
-  },
-  activeTab: {
-    ...theme.shadows.sm,
-  },
-  iconContainer: {
-    position: 'relative',
-    marginBottom: 6,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 24,
-  },
-  badge: {
-    position: 'absolute',
-    top: -8,
-    right: -12,
-    backgroundColor: theme.colors.error,
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 4,
-  },
-  badgeText: {
-    color: theme.colors.text.inverse,
-    fontSize: 10,
-    fontWeight: '600',
-  },
-  label: {
-    fontSize: 11,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-});
 
 export default CustomBottomTabBar;

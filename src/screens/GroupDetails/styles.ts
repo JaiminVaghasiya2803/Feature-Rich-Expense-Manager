@@ -8,7 +8,7 @@ export const getStyles = ({
   theme: ColorSchemeName;
 }): GroupDetailsProps.GroupDetailsStyles => {
   const themeColors = getThemeColors(theme);
-  
+
   return {
     container: {
       flex: 1,
@@ -19,7 +19,7 @@ export const getStyles = ({
       alignItems: 'center',
       justifyContent: 'space-between',
       padding: 24,
-      paddingTop: 48,
+      paddingTop: 16,
       backgroundColor: themeColors.surface,
     },
     headerInfo: {

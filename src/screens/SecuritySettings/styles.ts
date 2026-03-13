@@ -1,29 +1,19 @@
 import { StyleSheet } from 'react-native';
 import { getThemeColors, ThemeColors } from '../../styles/colors';
 
-export const getStyles = ({ theme, customTheme }: { theme: 'light' | 'dark'; customTheme?: Partial<ThemeColors> }) => {
+export const getStyles = ({
+  theme,
+  customTheme,
+}: {
+  theme: 'light' | 'dark';
+  customTheme?: Partial<ThemeColors>;
+}) => {
   const colors = getThemeColors(theme, customTheme);
-  
+
   return StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: colors.background,
-    },
-    header: {
-      paddingHorizontal: 20,
-      paddingVertical: 16,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.borderLight,
-    },
-    headerTitle: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      color: colors.text,
-      marginBottom: 4,
-    },
-    headerSubtitle: {
-      fontSize: 14,
-      color: colors.textSecondary,
+      backgroundColor: colors.backgroundDefault,
     },
     content: {
       flex: 1,
@@ -35,18 +25,26 @@ export const getStyles = ({ theme, customTheme }: { theme: 'light' | 'dark'; cus
     sectionTitle: {
       fontSize: 16,
       fontWeight: '600',
-      color: colors.text,
+      color: colors.textPrimary,
       marginBottom: 12,
       paddingHorizontal: 4,
     },
     sectionCard: {
       padding: 0,
+      backgroundColor: colors.surface,
+      borderRadius: 12,
+      shadowColor: colors.textPrimary,
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.05,
+      shadowRadius: 4,
+      elevation: 2,
     },
     settingItem: {
       flexDirection: 'row',
       alignItems: 'center',
       paddingVertical: 16,
       paddingHorizontal: 16,
+      backgroundColor: 'transparent',
     },
     settingIcon: {
       width: 40,
@@ -59,7 +57,7 @@ export const getStyles = ({ theme, customTheme }: { theme: 'light' | 'dark'; cus
     settingTitle: {
       fontSize: 16,
       fontWeight: '500',
-      color: colors.text,
+      color: colors.textPrimary,
       marginBottom: 2,
     },
     settingSubtitle: {
@@ -76,6 +74,7 @@ export const getStyles = ({ theme, customTheme }: { theme: 'light' | 'dark'; cus
       alignItems: 'center',
       paddingVertical: 16,
       paddingHorizontal: 16,
+      backgroundColor: 'transparent',
     },
     toggleContent: {
       flex: 1,
@@ -88,7 +87,7 @@ export const getStyles = ({ theme, customTheme }: { theme: 'light' | 'dark'; cus
     toggleTitle: {
       fontSize: 16,
       fontWeight: '500',
-      color: colors.text,
+      color: colors.textPrimary,
       marginBottom: 2,
     },
     toggleSubtitle: {
@@ -98,11 +97,18 @@ export const getStyles = ({ theme, customTheme }: { theme: 'light' | 'dark'; cus
     setupCard: {
       padding: 20,
       marginTop: 20,
+      backgroundColor: colors.surface,
+      borderRadius: 12,
+      shadowColor: colors.textPrimary,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+      elevation: 4,
     },
     setupTitle: {
       fontSize: 20,
       fontWeight: 'bold',
-      color: colors.text,
+      color: colors.textPrimary,
       marginBottom: 20,
       textAlign: 'center',
     },
@@ -136,11 +142,13 @@ export const getStyles = ({ theme, customTheme }: { theme: 'light' | 'dark'; cus
       backgroundColor: colors.info + '10',
       borderLeftWidth: 4,
       borderLeftColor: colors.info,
+      borderRadius: 8,
+      marginTop: 8,
     },
     infoTitle: {
       fontSize: 16,
       fontWeight: '600',
-      color: colors.text,
+      color: colors.textPrimary,
       marginBottom: 8,
     },
     infoText: {
