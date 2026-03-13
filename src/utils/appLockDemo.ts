@@ -1,6 +1,6 @@
 /**
  * App Lock Demo Utility
- * 
+ *
  * This utility provides helper functions to demonstrate and test
  * the app lock functionality during development.
  */
@@ -23,23 +23,20 @@ export const enableDemoAppLock = async (password: string = 'demo123') => {
       let hash = 0;
       for (let i = 0; i < pwd.length; i++) {
         const char = pwd.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
+        hash = (hash << 5) - hash + char;
         hash = hash & hash;
       }
       return hash.toString();
     };
 
     const hashedPassword = hashPassword(password);
-    
+
     await AsyncStorage.multiSet([
       [STORAGE_KEYS.SECURITY_ENABLED, 'true'],
       [STORAGE_KEYS.AUTH_METHOD, 'both'], // Enable both password and biometric
       [STORAGE_KEYS.PASSWORD_HASH, hashedPassword],
     ]);
 
-    console.log('✅ Demo app lock enabled with password:', password);
-    console.log('🔒 App will lock on next background/foreground cycle');
-    
     return true;
   } catch (error) {
     console.error('❌ Failed to enable demo app lock:', error);
@@ -58,7 +55,6 @@ export const disableDemoAppLock = async () => {
       STORAGE_KEYS.PASSWORD_HASH,
     ]);
 
-    console.log('✅ Demo app lock disabled');
     return true;
   } catch (error) {
     console.error('❌ Failed to disable demo app lock:', error);
@@ -83,7 +79,6 @@ export const checkAppLockStatus = async () => {
       hasPassword: !!hasPassword,
     };
 
-    console.log('🔍 App Lock Status:', status);
     return status;
   } catch (error) {
     console.error('❌ Failed to check app lock status:', error);
@@ -98,7 +93,6 @@ export const testPasswordVerification = async (password: string) => {
   try {
     const storedHash = await AsyncStorage.getItem(STORAGE_KEYS.PASSWORD_HASH);
     if (!storedHash) {
-      console.log('❌ No password set');
       return false;
     }
 
@@ -106,14 +100,13 @@ export const testPasswordVerification = async (password: string) => {
     let hash = 0;
     for (let i = 0; i < password.length; i++) {
       const char = password.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash;
     }
     const inputHash = hash.toString();
 
     const isValid = inputHash === storedHash;
-    console.log(isValid ? '✅ Password correct' : '❌ Password incorrect');
-    
+
     return isValid;
   } catch (error) {
     console.error('❌ Failed to verify password:', error);
@@ -131,18 +124,18 @@ export const appLockDemo = {
 
 // Usage examples:
 // import { appLockDemo } from '../utils/appLockDemo';
-// 
+//
 // // Enable app lock with default password 'demo123'
 // await appLockDemo.enable();
-// 
+//
 // // Enable app lock with custom password
 // await appLockDemo.enable('mypassword');
-// 
+//
 // // Check current status
 // await appLockDemo.status();
-// 
+//
 // // Test password
 // await appLockDemo.testPassword('demo123');
-// 
+//
 // // Disable app lock
 // await appLockDemo.disable();

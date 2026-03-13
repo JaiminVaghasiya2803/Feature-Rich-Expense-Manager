@@ -1,12 +1,6 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-  TextInput,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Plus, X, Users } from 'lucide-react-native';
 
@@ -36,9 +30,9 @@ const AddGroupScreen: React.FC<Props> = ({ navigation }) => {
   const { theme } = useTheme();
   const themeColors = getThemeColors(theme);
   const styles = useStyles({ theme });
-  
+
   const addGroupMutation = useAddGroup();
-  
+
   const [groupName, setGroupName] = useState('');
   const [description, setDescription] = useState('');
   const [members, setMembers] = useState<GroupMember[]>([]);
@@ -46,8 +40,16 @@ const AddGroupScreen: React.FC<Props> = ({ navigation }) => {
   const [selectedColor, setSelectedColor] = useState('#6366F1');
 
   const colors = [
-    '#6366F1', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6',
-    '#EC4899', '#06B6D4', '#84CC16', '#F97316', '#6B7280'
+    '#6366F1',
+    '#EF4444',
+    '#10B981',
+    '#F59E0B',
+    '#8B5CF6',
+    '#EC4899',
+    '#06B6D4',
+    '#84CC16',
+    '#F97316',
+    '#6B7280',
   ];
 
   const addMember = () => {
@@ -70,16 +72,14 @@ const AddGroupScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const createGroup = async () => {
-    console.log('🔄 Starting group creation from AddGroupScreen...');
-    
     if (!groupName.trim()) {
       Alert.alert('Error', 'Please enter a group name');
       return;
     }
 
     try {
-      const tempId = Date.now(); 
-      
+      const tempId = Date.now();
+
       const groupData = {
         id: tempId,
         name: groupName.trim(),
@@ -89,26 +89,24 @@ const AddGroupScreen: React.FC<Props> = ({ navigation }) => {
         updatedAt: new Date().toISOString(),
       };
 
-      console.log('📤 Sending group data from AddGroupScreen:', groupData);
-      
       const result = await addGroupMutation.mutateAsync(groupData);
-      console.log('✅ Group created successfully from AddGroupScreen:', result);
-      
+
       Alert.alert('Success', 'Group created successfully!', [
-        { text: 'OK', onPress: () => navigation.goBack() }
+        { text: 'OK', onPress: () => navigation.goBack() },
       ]);
     } catch (error) {
-      console.error('❌ Error in AddGroupScreen createGroup:', error);
-      
+      if (__DEV__) {
+        console.error('❌ Error in AddGroupScreen createGroup:', error);
+      }
       let errorMessage = 'Failed to create group. Please try again.';
-      
+
       if (error instanceof Error) {
         console.error('Error details:', {
           message: error.message,
           stack: error.stack,
-          name: error.name
+          name: error.name,
         });
-        
+
         // Check for specific error types
         if (error.message.includes('iterator')) {
           errorMessage = 'There was a data processing error. Please try again.';
@@ -118,7 +116,7 @@ const AddGroupScreen: React.FC<Props> = ({ navigation }) => {
           errorMessage = `Error: ${error.message}`;
         }
       }
-      
+
       Alert.alert('Error', errorMessage);
     }
   };
@@ -139,13 +137,13 @@ const AddGroupScreen: React.FC<Props> = ({ navigation }) => {
     <View>
       <Text style={styles.sectionTitle}>Group Color</Text>
       <View style={styles.colorGrid}>
-        {colors.map((color) => (
+        {colors.map(color => (
           <TouchableOpacity
             key={color}
             style={[
               styles.colorOption,
               { backgroundColor: color },
-              selectedColor === color && styles.selectedColor
+              selectedColor === color && styles.selectedColor,
             ]}
             onPress={() => setSelectedColor(color)}
           />
@@ -157,7 +155,7 @@ const AddGroupScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <SafeAreaView edges={['top']} />
-      
+
       <Header
         title="Create Expense Group"
         subtitle="Organize your shared expenses"
@@ -173,7 +171,7 @@ const AddGroupScreen: React.FC<Props> = ({ navigation }) => {
             placeholder="e.g., Roommates, Office Team, Family"
             style={styles.input}
           />
-          
+
           <Input
             label="Description (Optional)"
             value={description}
@@ -193,10 +191,10 @@ const AddGroupScreen: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.sectionSubtitle}>
             Add people who will share expenses in this group
           </Text>
-          
+
           {members.length > 0 && (
             <View style={styles.membersList}>
-              {members.map((member) => (
+              {members.map(member => (
                 <MemberItem key={member?.id} member={member} />
               ))}
             </View>
@@ -225,14 +223,10 @@ const AddGroupScreen: React.FC<Props> = ({ navigation }) => {
             <View style={[styles.groupColorIndicator, { backgroundColor: selectedColor }]} />
             <View style={styles.groupPreviewInfo}>
               <Text style={styles.previewName}>{groupName || 'Group Name'}</Text>
-              <Text style={styles.previewDescription}>
-                {description || 'No description'}
-              </Text>
+              <Text style={styles.previewDescription}>{description || 'No description'}</Text>
               <View style={styles.previewStats}>
                 <Users size={16} color={themeColors.textSecondary} />
-                <Text style={styles.previewMembers}>
-                  {members.length} members
-                </Text>
+                <Text style={styles.previewMembers}>{members.length} members</Text>
               </View>
             </View>
           </View>

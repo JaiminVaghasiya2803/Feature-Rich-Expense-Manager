@@ -1,18 +1,7 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-  Palette, 
-  Sun, 
-  Moon, 
-  Smartphone, 
- } from 'lucide-react-native';
+import { Palette, Sun, Moon, Smartphone } from 'lucide-react-native';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import { createUseStyles } from '../../styles/createUseStyles';
@@ -65,7 +54,7 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
           textPrimary: '#0C4A6E',
           textSecondary: '#0369A1',
           textTertiary: '#0284C7',
-        }
+        },
       },
       {
         name: 'Forest Green',
@@ -83,7 +72,7 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
           textPrimary: '#14532D',
           textSecondary: '#166534',
           textTertiary: '#15803D',
-        }
+        },
       },
       {
         name: 'Sunset Orange',
@@ -101,7 +90,7 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
           textPrimary: '#9A3412',
           textSecondary: '#C2410C',
           textTertiary: '#EA580C',
-        }
+        },
       },
       {
         name: 'Royal Purple',
@@ -119,7 +108,7 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
           textPrimary: '#581C87',
           textSecondary: '#6B21A8',
           textTertiary: '#7C2D92',
-        }
+        },
       },
       {
         name: 'Rose Pink',
@@ -137,7 +126,7 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
           textPrimary: '#881337',
           textSecondary: '#9F1239',
           textTertiary: '#BE185D',
-        }
+        },
       },
       {
         name: 'Golden Amber',
@@ -155,7 +144,7 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
           textPrimary: '#92400E',
           textSecondary: '#B45309',
           textTertiary: '#D97706',
-        }
+        },
       },
       {
         name: 'Emerald Mint',
@@ -173,7 +162,7 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
           textPrimary: '#064E3B',
           textSecondary: '#065F46',
           textTertiary: '#047857',
-        }
+        },
       },
       {
         name: 'Saffron Spice',
@@ -191,7 +180,7 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
           textPrimary: '#8B4513',
           textSecondary: '#A0522D',
           textTertiary: '#CD853F',
-        }
+        },
       },
       {
         name: 'Peacock Blue',
@@ -209,8 +198,8 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
           textPrimary: '#001219',
           textSecondary: '#005F73',
           textTertiary: '#0A9396',
-        }
-      }
+        },
+      },
     ],
     dark: [
       {
@@ -229,7 +218,7 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
           textPrimary: '#E2E8F0',
           textSecondary: '#CBD5E1',
           textTertiary: '#94A3B8',
-        }
+        },
       },
       {
         name: 'Crimson Red',
@@ -247,7 +236,7 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
           textPrimary: '#FEE2E2',
           textSecondary: '#FECACA',
           textTertiary: '#F87171',
-        }
+        },
       },
       {
         name: 'Steel Gray',
@@ -265,7 +254,7 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
           textPrimary: '#F1F5F9',
           textSecondary: '#CBD5E1',
           textTertiary: '#94A3B8',
-        }
+        },
       },
       {
         name: 'Deep Forest',
@@ -283,7 +272,7 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
           textPrimary: '#ECFDF5',
           textSecondary: '#D1FAE5',
           textTertiary: '#A7F3D0',
-        }
+        },
       },
       {
         name: 'Ocean Depths',
@@ -301,7 +290,7 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
           textPrimary: '#F0F9FF',
           textSecondary: '#E0F2FE',
           textTertiary: '#BAE6FD',
-        }
+        },
       },
       {
         name: 'Purple Haze',
@@ -319,7 +308,7 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
           textPrimary: '#FAF5FF',
           textSecondary: '#F3E8FF',
           textTertiary: '#DDD6FE',
-        }
+        },
       },
       {
         name: 'Amber Night',
@@ -337,7 +326,7 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
           textPrimary: '#FFFBEB',
           textSecondary: '#FEF3C7',
           textTertiary: '#FDE68A',
-        }
+        },
       },
       {
         name: 'Rose Shadow',
@@ -355,9 +344,9 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
           textPrimary: '#FFF1F2',
           textSecondary: '#FFE4E6',
           textTertiary: '#FECDD3',
-        }
-      }
-    ]
+        },
+      },
+    ],
   };
 
   const handleThemeChange = (newTheme: string) => {
@@ -366,13 +355,10 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
 
   const handlePresetApply = (preset: unknown) => {
     const themeType = selectedThemeCategory === 'light' ? 'Light' : 'Dark';
-    
+
     // Actually apply the theme
     setCustomTheme(preset.colors);
-    
-    // Debug log to verify theme is being set
-    console.log('Theme applied:', preset.name, preset.colors);
-    
+
     Alert.alert(
       'Theme Applied',
       `${preset.name} (${themeType}) theme has been applied successfully! You should see the colors change immediately.`,
@@ -386,14 +372,14 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
       'Are you sure you want to reset all theme customizations to default?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Reset', 
+        {
+          text: 'Reset',
           style: 'destructive',
           onPress: () => {
             resetToDefault();
             Alert.alert('Theme Reset', 'Theme has been reset to default colors.');
-          }
-        }
+          },
+        },
       ]
     );
   };
@@ -403,27 +389,23 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
       <Card style={styles.sectionCard}>
         <Text style={styles.sectionTitle}>Theme Mode</Text>
         <View style={styles.themeOptions}>
-          {themeOptions.map((option) => {
+          {themeOptions.map(option => {
             const IconComponent = option.icon;
             const isSelected = theme === option.key;
-            
+
             return (
               <TouchableOpacity
                 key={option.key}
-                style={[
-                  styles.themeOption,
-                  isSelected && styles.selectedThemeOption
-                ]}
+                style={[styles.themeOption, isSelected && styles.selectedThemeOption]}
                 onPress={() => handleThemeChange(option.key)}
               >
-                <IconComponent 
-                  size={24} 
-                  color={isSelected ? themeColors.primary : themeColors.textSecondary} 
+                <IconComponent
+                  size={24}
+                  color={isSelected ? themeColors.primary : themeColors.textSecondary}
                 />
-                <Text style={[
-                  styles.themeOptionText,
-                  isSelected && styles.selectedThemeOptionText
-                ]}>
+                <Text
+                  style={[styles.themeOptionText, isSelected && styles.selectedThemeOptionText]}
+                >
                   {option.label}
                 </Text>
               </TouchableOpacity>
@@ -450,7 +432,8 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
                 Card Title (Surface Color)
               </Text>
               <Text style={[styles.previewCardText, { color: themeColors.textSecondary }]}>
-                This card uses the surface color. You should see it change when you apply different themes.
+                This card uses the surface color. You should see it change when you apply different
+                themes.
               </Text>
               <View style={[styles.previewButton, { backgroundColor: themeColors.primary }]}>
                 <Text style={[styles.previewButtonText, { color: themeColors.textInverse }]}>
@@ -469,38 +452,54 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
 
       <Card style={styles.sectionCard}>
         <Text style={styles.sectionTitle}>Quick Themes</Text>
-        <Text style={styles.sectionSubtitle}>Complete color schemes that change all app colors</Text>
-        
+        <Text style={styles.sectionSubtitle}>
+          Complete color schemes that change all app colors
+        </Text>
+
         {/* Theme Category Selector */}
         <View style={styles.themeCategoryTabs}>
           <TouchableOpacity
             style={[
               styles.themeCategoryTab,
-              selectedThemeCategory === 'light' && styles.selectedThemeCategoryTab
+              selectedThemeCategory === 'light' && styles.selectedThemeCategoryTab,
             ]}
             onPress={() => setSelectedThemeCategory('light')}
           >
-            <Sun size={16} color={selectedThemeCategory === 'light' ? themeColors.primary : themeColors.textSecondary} />
-            <Text style={[
-              styles.themeCategoryTabText,
-              selectedThemeCategory === 'light' && styles.selectedThemeCategoryTabText
-            ]}>
+            <Sun
+              size={16}
+              color={
+                selectedThemeCategory === 'light' ? themeColors.primary : themeColors.textSecondary
+              }
+            />
+            <Text
+              style={[
+                styles.themeCategoryTabText,
+                selectedThemeCategory === 'light' && styles.selectedThemeCategoryTabText,
+              ]}
+            >
               Light Themes ({predefinedThemes.light.length})
             </Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             style={[
               styles.themeCategoryTab,
-              selectedThemeCategory === 'dark' && styles.selectedThemeCategoryTab
+              selectedThemeCategory === 'dark' && styles.selectedThemeCategoryTab,
             ]}
             onPress={() => setSelectedThemeCategory('dark')}
           >
-            <Moon size={16} color={selectedThemeCategory === 'dark' ? themeColors.primary : themeColors.textSecondary} />
-            <Text style={[
-              styles.themeCategoryTabText,
-              selectedThemeCategory === 'dark' && styles.selectedThemeCategoryTabText
-            ]}>
+            <Moon
+              size={16}
+              color={
+                selectedThemeCategory === 'dark' ? themeColors.primary : themeColors.textSecondary
+              }
+            />
+            <Text
+              style={[
+                styles.themeCategoryTabText,
+                selectedThemeCategory === 'dark' && styles.selectedThemeCategoryTabText,
+              ]}
+            >
               Dark Themes ({predefinedThemes.dark.length})
             </Text>
           </TouchableOpacity>
@@ -508,13 +507,16 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
 
         {/* Category Description */}
         <Text style={[styles.sectionSubtitle, { marginBottom: 16, lineHeight: 18 }]}>
-          {selectedThemeCategory === 'light' 
+          {selectedThemeCategory === 'light'
             ? 'Bright and clean themes perfect for daytime use with light backgrounds and dark text.'
-            : 'Dark themes designed for low-light environments with dark backgrounds and light text.'
-          }
+            : 'Dark themes designed for low-light environments with dark backgrounds and light text.'}
         </Text>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.presetsScrollView}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.presetsScrollView}
+        >
           <View style={styles.presetThemes}>
             {predefinedThemes[selectedThemeCategory].map((preset, index) => (
               <TouchableOpacity
@@ -524,8 +526,15 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
               >
                 <View style={styles.presetColors}>
                   <View style={[styles.presetColor, { backgroundColor: preset.colors.primary }]} />
-                  <View style={[styles.presetColor, { backgroundColor: preset.colors.secondary }]} />
-                  <View style={[styles.presetColor, { backgroundColor: preset.colors.backgroundDefault }]} />
+                  <View
+                    style={[styles.presetColor, { backgroundColor: preset.colors.secondary }]}
+                  />
+                  <View
+                    style={[
+                      styles.presetColor,
+                      { backgroundColor: preset.colors.backgroundDefault },
+                    ]}
+                  />
                   <View style={[styles.presetColor, { backgroundColor: preset.colors.surface }]} />
                 </View>
                 <Text style={styles.presetName}>{preset.name}</Text>
@@ -540,14 +549,12 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
     </View>
   );
 
-  const categories = [
-    { key: 'appearance', label: 'Appearance', icon: Palette },
-  ];
+  const categories = [{ key: 'appearance', label: 'Appearance', icon: Palette }];
 
   return (
     <View style={styles.container}>
       <SafeAreaView edges={['top']} />
-      
+
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Theme Settings</Text>
         <Text style={styles.headerSubtitle}>
@@ -557,27 +564,21 @@ const ThemeSettingsScreen: React.FC<Props> = () => {
       </View>
 
       <View style={styles.categoryTabs}>
-        {categories.map((category) => {
+        {categories.map(category => {
           const IconComponent = category.icon;
           const isSelected = selectedCategory === category.key;
-          
+
           return (
             <TouchableOpacity
               key={category.key}
-              style={[
-                styles.categoryTab,
-                isSelected && styles.selectedCategoryTab
-              ]}
+              style={[styles.categoryTab, isSelected && styles.selectedCategoryTab]}
               onPress={() => setSelectedCategory(category.key)}
             >
-              <IconComponent 
-                size={20} 
-                color={isSelected ? themeColors.primary : themeColors.textSecondary} 
+              <IconComponent
+                size={20}
+                color={isSelected ? themeColors.primary : themeColors.textSecondary}
               />
-              <Text style={[
-                styles.categoryTabText,
-                isSelected && styles.selectedCategoryTabText
-              ]}>
+              <Text style={[styles.categoryTabText, isSelected && styles.selectedCategoryTabText]}>
                 {category.label}
               </Text>
             </TouchableOpacity>

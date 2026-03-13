@@ -70,13 +70,9 @@ export namespace MyComponentProps {
 Define a function that generates styles based on theme context:
 
 ```typescript
-const getStyles = ({
-  theme,
-}: {
-  theme: ColorSchemeName;
-}): MyComponentProps.MyComponentStyles => {
+const getStyles = ({ theme }: { theme: ColorSchemeName }): MyComponentProps.MyComponentStyles => {
   const themeColors = getThemeColors(theme);
-  
+
   return {
     container: {
       flex: 1,
@@ -140,14 +136,7 @@ Here's a full implementation following the pattern:
 
 ```typescript
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleProp,
-  ViewStyle,
-  TextStyle,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleProp, ViewStyle, TextStyle } from 'react-native';
 import { ColorSchemeName } from 'react-native';
 import { createUseStyles } from '../styles/createUseStyles';
 import { getThemeColors } from '../styles/colors';
@@ -179,7 +168,7 @@ const getStyles = ({
   theme: ColorSchemeName;
 }): ExampleComponentProps.ExampleComponentStyles => {
   const themeColors = getThemeColors(theme);
-  
+
   return {
     container: {
       flex: 1,
@@ -274,6 +263,7 @@ export default ExampleComponent;
 The system provides comprehensive color palettes for both light and dark themes:
 
 ### Light Theme Colors
+
 - **Primary**: #6366F1 (Indigo)
 - **Secondary**: #10B981 (Emerald)
 - **Background**: #F8FAFC (Slate 50)
@@ -282,6 +272,7 @@ The system provides comprehensive color palettes for both light and dark themes:
 - **Text Secondary**: #64748B (Slate 500)
 
 ### Dark Theme Colors
+
 - **Primary**: #818CF8 (Indigo 400)
 - **Secondary**: #34D399 (Emerald 400)
 - **Background**: #0F172A (Slate 900)
@@ -299,31 +290,31 @@ interface ThemeColors {
   primaryDark: string;
   secondary: string;
   secondaryLight: string;
-  
+
   // Status colors
   success: string;
   danger: string;
   warning: string;
   info: string;
-  
+
   // Background colors
   backgroundDefault: string;
   backgroundSecondary: string;
   surface: string;
   surfaceSecondary: string;
   surfaceElevated: string;
-  
+
   // Text colors
   textPrimary: string;
   textSecondary: string;
   textTertiary: string;
   textInverse: string;
-  
+
   // Border colors
   borderLight: string;
   borderMedium: string;
   borderDark: string;
-  
+
   // Overlay colors
   overlay: string;
   overlayLight: string;
@@ -336,10 +327,6 @@ interface ThemeColors {
 
 ```typescript
 const { theme, isDark, toggleTheme, setTheme } = useTheme();
-
-// Check current theme
-console.log('Current theme:', theme); // 'light' | 'dark'
-console.log('Is dark mode:', isDark); // boolean
 
 // Toggle between themes
 toggleTheme();
@@ -371,6 +358,7 @@ The `createUseStyles` hook uses `React.useMemo` with `Object.values(context)` as
 ### From Static Styles
 
 **Before:**
+
 ```typescript
 const styles = StyleSheet.create({
   container: {
@@ -385,6 +373,7 @@ const styles = StyleSheet.create({
 ```
 
 **After:**
+
 ```typescript
 const getStyles = ({ theme }: { theme: ColorSchemeName }) => {
   const themeColors = getThemeColors(theme);

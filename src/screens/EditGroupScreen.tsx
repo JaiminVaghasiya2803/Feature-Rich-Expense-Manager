@@ -37,9 +37,6 @@ type Props = {
 };
 
 const EditGroupScreen: React.FC<Props> = ({ route }) => {
-  console.log('🔧 EditGroupScreen - Component rendered');
-  console.log('🔧 EditGroupScreen - Route params:', route?.params);
-
   // All hooks must be called before any early returns
   const navigation = useNavigation();
   const mutation = useEditGroup();
@@ -71,9 +68,6 @@ const EditGroupScreen: React.FC<Props> = ({ route }) => {
     );
   }
 
-  console.log('🔧 EditGroupScreen - Received group:', group);
-  console.log('🔧 EditGroupScreen - Theme:', theme);
-
   const validateForm = () => {
     const newErrors: { name?: string } = {};
 
@@ -86,10 +80,7 @@ const EditGroupScreen: React.FC<Props> = ({ route }) => {
   };
 
   const handleSave = async () => {
-    console.log('💾 Saving group changes...');
-
     if (!validateForm()) {
-      console.log('❌ Form validation failed');
       return;
     }
 
@@ -104,10 +95,11 @@ const EditGroupScreen: React.FC<Props> = ({ route }) => {
         },
       });
 
-      console.log('✅ Group updated successfully');
       navigation.goBack();
     } catch (error) {
-      console.error('❌ Error updating group:', error);
+      if (__DEV__) {
+        console.error('❌ Error updating group:', error);
+      }
     }
   };
 
@@ -116,8 +108,6 @@ const EditGroupScreen: React.FC<Props> = ({ route }) => {
     name.trim() !== group.name ||
     (description.trim() || undefined) !== group.description ||
     selectedColor !== group.color;
-
-  console.log('🔧 EditGroupScreen - About to render UI');
 
   return (
     <View style={[styles.container, { backgroundColor: themeColors.backgroundDefault }]}>

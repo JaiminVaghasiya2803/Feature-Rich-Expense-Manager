@@ -6,24 +6,30 @@ export const useEditGroup = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, updates }: { id: number | string; updates: Partial<ExpenseGroup> }) => {
-      console.log('🔧 useEditGroup - Updating group:', id, updates);
-      
+    mutationFn: async ({
+      id,
+      updates,
+    }: {
+      id: number | string;
+      updates: Partial<ExpenseGroup>;
+    }) => {
       try {
         const response = await apiClient.patch<ExpenseGroup>(`/groups/${id}`, updates);
-        console.log('✅ useEditGroup - Group updated successfully:', response.data);
         return response.data;
       } catch (error) {
-        console.error('❌ useEditGroup - Error updating group:', error);
+        if (__DEV__) {
+          console.error('❌ useEditGroup - Error updating group:', error);
+        }
         throw error;
       }
     },
     onSuccess: () => {
-      console.log('✅ useEditGroup - Invalidating groups query');
       queryClient.invalidateQueries({ queryKey: ['groups'] });
     },
-    onError: (error) => {
-      console.error('❌ useEditGroup - Mutation failed:', error);
+    onError: error => {
+      if (__DEV__) {
+        console.error('❌ useEditGroup - Mutation failed:', error);
+      }
     },
   });
 };

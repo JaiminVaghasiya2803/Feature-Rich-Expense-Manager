@@ -1,15 +1,9 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-  TextInput,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft, Plus, X, Users } from 'lucide-react-native';
-import { Person,   CURRENCIES } from '../../types/billSplit';
+import { Person, CURRENCIES } from '../../types/billSplit';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
@@ -33,19 +27,25 @@ const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
   const themeColors = getThemeColors(theme, customTheme || undefined);
   const styles = useStyles({ theme, customTheme: customTheme || undefined });
   const addGroupMutation = useAddGroup();
-  
+
   const [groupName, setGroupName] = useState('');
   const [description, setDescription] = useState('');
   const [currency, setCurrency] = useState('INR');
-  const [members, setMembers] = useState<Person[]>([
-    { id: '1', name: 'You', color: '#6366F1' }
-  ]);
+  const [members, setMembers] = useState<Person[]>([{ id: '1', name: 'You', color: '#6366F1' }]);
   const [newMemberName, setNewMemberName] = useState('');
   const [selectedColor, setSelectedColor] = useState('#FF6B6B');
 
   const colors = [
-    '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
-    '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9'
+    '#FF6B6B',
+    '#4ECDC4',
+    '#45B7D1',
+    '#96CEB4',
+    '#FFEAA7',
+    '#DDA0DD',
+    '#98D8C8',
+    '#F7DC6F',
+    '#BB8FCE',
+    '#85C1E9',
   ];
 
   const addMember = () => {
@@ -73,8 +73,6 @@ const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const createGroup = async () => {
-    console.log('🔄 Starting group creation...');
-    
     if (!groupName.trim()) {
       Alert.alert('Error', 'Please enter a group name');
       return;
@@ -87,20 +85,23 @@ const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
 
     try {
       // Test API connectivity first
-      console.log('🔍 Testing API connectivity...');
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000);
-        
+
         const testResponse = await fetch(`${apiClient.defaults.baseURL}/health`, {
           method: 'GET',
           signal: controller.signal,
         });
-        
+
         clearTimeout(timeoutId);
-        console.log('🏥 Health check response:', testResponse.status);
       } catch (healthError) {
-        console.warn('⚠️ Health check failed (server might not have /health endpoint):', healthError);
+        if (__DEV__) {
+          console.warn(
+            '⚠️ Health check failed (server might not have /health endpoint):',
+            healthError
+          );
+        }
       }
 
       // Convert BillGroup format to ExpenseGroup format for the API
@@ -122,37 +123,20 @@ const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
         updatedAt: new Date().toISOString(),
       };
 
-      console.log('📤 Sending group data:', groupData);
-      
       const result = await addGroupMutation.mutateAsync(groupData);
-      console.log('✅ Group created successfully:', result);
-      
+
       Alert.alert('Success', 'Group created successfully!', [
-        { text: 'OK', onPress: () => (navigation as any).goBack() }
+        { text: 'OK', onPress: () => (navigation as any).goBack() },
       ]);
     } catch (error) {
-      console.error('❌ Error creating group:', error);
-      
-      // More detailed error logging
-      if (error instanceof Error) {
-        console.error('Error message:', error.message);
-        console.error('Error stack:', error.stack);
+      if (__DEV__) {
+        console.error('❌ Error creating group:', error);
       }
-      
-      // Check if it's a network error
-      if (error && typeof error === 'object' && 'response' in error) {
-        console.error('API Response error:', error.response);
-      }
-      
-      // Check if it's a network connectivity issue
-      if (error && typeof error === 'object' && 'code' in error) {
-        if (error.code === 'NETWORK_ERROR' || error.code === 'ECONNREFUSED') {
-          Alert.alert('Network Error', 'Cannot connect to server. Please check your internet connection and try again.');
-          return;
-        }
-      }
-      
-      Alert.alert('Error', `Failed to create group: ${error instanceof Error ? error.message : 'Unknown error'}`);
+
+      Alert.alert(
+        'Error',
+        `Failed to create group: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   };
 
@@ -174,13 +158,13 @@ const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
     <View>
       <Text style={styles.sectionTitle}>Group Color</Text>
       <View style={styles.colorGrid}>
-        {colors.map((color) => (
+        {colors.map(color => (
           <TouchableOpacity
             key={color}
             style={[
               styles.colorOption,
               { backgroundColor: color },
-              selectedColor === color && styles.selectedColor
+              selectedColor === color && styles.selectedColor,
             ]}
             onPress={() => setSelectedColor(color)}
           />
@@ -194,25 +178,23 @@ const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
       <Text style={styles.sectionTitle}>Currency</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View style={styles.currencyList}>
-          {CURRENCIES.map((curr) => (
+          {CURRENCIES.map(curr => (
             <TouchableOpacity
               key={curr.code}
-              style={[
-                styles.currencyOption,
-                currency === curr.code && styles.selectedCurrency
-              ]}
+              style={[styles.currencyOption, currency === curr.code && styles.selectedCurrency]}
               onPress={() => setCurrency(curr.code)}
             >
-              <Text style={[
-                styles.currencySymbol,
-                currency === curr.code && styles.selectedCurrencyText
-              ]}>
+              <Text
+                style={[
+                  styles.currencySymbol,
+                  currency === curr.code && styles.selectedCurrencyText,
+                ]}
+              >
                 {curr.symbol}
               </Text>
-              <Text style={[
-                styles.currencyCode,
-                currency === curr.code && styles.selectedCurrencyText
-              ]}>
+              <Text
+                style={[styles.currencyCode, currency === curr.code && styles.selectedCurrencyText]}
+              >
                 {curr.code}
               </Text>
             </TouchableOpacity>
@@ -225,7 +207,7 @@ const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <SafeAreaView edges={['top']} />
-      
+
       <View style={styles.header}>
         <TouchableOpacity onPress={() => (navigation as any).goBack()}>
           <ArrowLeft size={24} color={themeColors.textPrimary} />
@@ -243,7 +225,7 @@ const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
             placeholder="Enter group name"
             style={styles.input}
           />
-          
+
           <Input
             label="Description (Optional)"
             value={description}
@@ -264,12 +246,12 @@ const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
 
         <Card style={styles.membersCard}>
           <Text style={styles.sectionTitle}>Members ({members.length})</Text>
-          
+
           <View style={styles.membersList}>
             {members.map((member, index) => (
-              <MemberItem 
-                key={member.id} 
-                member={member} 
+              <MemberItem
+                key={member.id}
+                member={member}
                 canRemove={index > 0} // Can't remove the first member (You)
               />
             ))}
@@ -298,9 +280,7 @@ const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
             <View style={[styles.groupColorIndicator, { backgroundColor: selectedColor }]} />
             <View style={styles.groupPreviewInfo}>
               <Text style={styles.previewName}>{groupName || 'Group Name'}</Text>
-              <Text style={styles.previewDescription}>
-                {description || 'No description'}
-              </Text>
+              <Text style={styles.previewDescription}>{description || 'No description'}</Text>
               <View style={styles.previewStats}>
                 <Users size={16} color={themeColors.textSecondary} />
                 <Text style={styles.previewMembers}>

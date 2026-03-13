@@ -45,6 +45,7 @@ const ExpenseList: React.FC<Props> = ({
     return expense.groupId ? groups.find(g => g.id === expense.groupId) : undefined;
   };
 
+  // eslint-disable-next-line react/no-unstable-nested-components
   const EmptyState = () => (
     <View style={styles.emptyContainer}>
       <FileX size={48} color={themeColors.textTertiary} />

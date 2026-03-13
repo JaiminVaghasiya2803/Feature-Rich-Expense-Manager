@@ -1,19 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Alert,
-  Vibration,
-} from 'react-native';
+import { View, Text, TouchableOpacity, Alert, Vibration } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-  Lock, 
-  Fingerprint, 
-  Eye, 
-  EyeOff,
-  Shield
-} from 'lucide-react-native';
+import { Lock, Fingerprint, Eye, EyeOff, Shield } from 'lucide-react-native';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
@@ -31,14 +19,9 @@ const AppLockScreen: React.FC = () => {
   const { customTheme } = useCustomTheme();
   const themeColors = getThemeColors(theme, customTheme || undefined);
   const styles = useStyles({ theme, customTheme: customTheme || undefined });
-  
-  const { 
-    authMethod, 
-    unlockApp, 
-    verifyPassword, 
-    authenticateWithBiometric,
-    hasBiometric 
-  } = useSecurity();
+
+  const { authMethod, unlockApp, verifyPassword, authenticateWithBiometric, hasBiometric } =
+    useSecurity();
 
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -46,16 +29,14 @@ const AppLockScreen: React.FC = () => {
   const [failedAttempts, setFailedAttempts] = useState(0);
 
   useEffect(() => {
-    console.log('🔐 AppLockScreen mounted with authMethod:', authMethod, 'hasBiometric:', hasBiometric);
-    
     // Auto-trigger biometric if it's the only method or preferred
     if (authMethod === 'biometric' && hasBiometric) {
-      console.log('👆 Auto-triggering biometric authentication...');
       // Add a small delay to ensure everything is initialized
       setTimeout(() => {
         handleBiometricAuth();
       }, 500);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authMethod, hasBiometric]);
 
   const handlePasswordAuth = async () => {
@@ -64,14 +45,11 @@ const AppLockScreen: React.FC = () => {
       return;
     }
 
-    console.log('🔐 Attempting password authentication...');
     setIsAuthenticating(true);
     try {
       const isValid = await verifyPassword(password);
-      console.log('🔍 Password verification result:', isValid);
-      
+
       if (isValid) {
-        console.log('✅ Password correct, unlocking app...');
         unlockApp();
         setPassword('');
         setFailedAttempts(0);
@@ -80,12 +58,10 @@ const AppLockScreen: React.FC = () => {
         setFailedAttempts(newFailedAttempts);
         setPassword('');
         Vibration.vibrate(500);
-        
-        Alert.alert(
-          'Incorrect Password', 
-          `Failed attempts: ${newFailedAttempts}/5`,
-          [{ text: 'OK' }]
-        );
+
+        Alert.alert('Incorrect Password', `Failed attempts: ${newFailedAttempts}/5`, [
+          { text: 'OK' },
+        ]);
 
         if (newFailedAttempts >= 5) {
           Alert.alert(
@@ -96,7 +72,9 @@ const AppLockScreen: React.FC = () => {
         }
       }
     } catch (error) {
-      console.error('❌ Authentication error:', error);
+      if (__DEV__) {
+        console.error('❌ Authentication error:', error);
+      }
       Alert.alert('Error', 'Authentication failed. Please try again.');
     } finally {
       setIsAuthenticating(false);
@@ -109,21 +87,20 @@ const AppLockScreen: React.FC = () => {
       return;
     }
 
-    console.log('👆 Attempting biometric authentication...');
     setIsAuthenticating(true);
     try {
       const success = await authenticateWithBiometric();
-      console.log('🔍 Biometric authentication result:', success);
-      
+
       if (success) {
-        console.log('✅ Biometric authentication successful, unlocking app...');
         unlockApp();
         setFailedAttempts(0);
       } else {
         Alert.alert('Authentication Failed', 'Biometric authentication was not successful');
       }
     } catch (error) {
-      console.error('❌ Biometric authentication error:', error);
+      if (__DEV__) {
+        console.error('❌ Biometric authentication error:', error);
+      }
       Alert.alert('Error', 'Biometric authentication failed');
     } finally {
       setIsAuthenticating(false);
@@ -143,9 +120,7 @@ const AppLockScreen: React.FC = () => {
               <Shield size={64} color={themeColors.primary} />
             </View>
             <Text style={styles.title}>App Locked</Text>
-            <Text style={styles.subtitle}>
-              Enter your credentials to access the app
-            </Text>
+            <Text style={styles.subtitle}>Enter your credentials to access the app</Text>
           </View>
 
           {/* Authentication Methods */}
@@ -153,7 +128,7 @@ const AppLockScreen: React.FC = () => {
             {canUsePassword && (
               <Card style={styles.authCard}>
                 <Text style={styles.authTitle}>Password Authentication</Text>
-                
+
                 <Input
                   placeholder="Enter your password"
                   value={password}
@@ -163,10 +138,11 @@ const AppLockScreen: React.FC = () => {
                   leftIcon={<Lock size={20} color={themeColors.textSecondary} />}
                   rightIcon={
                     <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                      {showPassword ? 
-                        <EyeOff size={20} color={themeColors.textSecondary} /> :
+                      {showPassword ? (
+                        <EyeOff size={20} color={themeColors.textSecondary} />
+                      ) : (
                         <Eye size={20} color={themeColors.textSecondary} />
-                      }
+                      )}
                     </TouchableOpacity>
                   }
                   onSubmitEditing={handlePasswordAuth}
@@ -182,9 +158,7 @@ const AppLockScreen: React.FC = () => {
                 />
 
                 {failedAttempts > 0 && (
-                  <Text style={styles.errorText}>
-                    Failed attempts: {failedAttempts}/5
-                  </Text>
+                  <Text style={styles.errorText}>Failed attempts: {failedAttempts}/5</Text>
                 )}
               </Card>
             )}
@@ -195,16 +169,14 @@ const AppLockScreen: React.FC = () => {
                 <Text style={styles.biometricDescription}>
                   Use your fingerprint or face to unlock the app
                 </Text>
-                
+
                 <TouchableOpacity
                   style={styles.biometricButton}
                   onPress={handleBiometricAuth}
                   disabled={isAuthenticating}
                 >
                   <Fingerprint size={48} color={themeColors.primary} />
-                  <Text style={styles.biometricButtonText}>
-                    Tap to authenticate
-                  </Text>
+                  <Text style={styles.biometricButtonText}>Tap to authenticate</Text>
                 </TouchableOpacity>
               </Card>
             )}
@@ -215,7 +187,7 @@ const AppLockScreen: React.FC = () => {
             <Text style={styles.footerText}>
               Your data is protected with {authMethod} authentication
             </Text>
-            
+
             {/* Debug bypass button - only in development */}
             {__DEV__ && (
               <TouchableOpacity
@@ -228,7 +200,6 @@ const AppLockScreen: React.FC = () => {
                   borderColor: themeColors.warning,
                 }}
                 onPress={() => {
-                  console.log('🚨 Debug bypass activated');
                   unlockApp();
                 }}
               >

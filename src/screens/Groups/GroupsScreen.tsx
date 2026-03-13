@@ -1,10 +1,6 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React, { useState, useMemo } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Plus, Users, Calendar, TrendingUp, Search } from 'lucide-react-native';
 
@@ -28,20 +24,17 @@ const GroupsScreen: React.FC<Props> = ({ navigation }) => {
   const { theme } = useTheme();
   const themeColors = getThemeColors(theme);
   const styles = useStyles({ theme });
-  
+
   const [searchQuery, setSearchQuery] = useState('');
   const { data: groups = [], refetch, isFetching, error } = useGroups();
-
-  console.log('🏠 GroupsScreen - groups:', groups);
-  console.log('🏠 GroupsScreen - isFetching:', isFetching);
-  console.log('🏠 GroupsScreen - error:', error);
 
   // Filter groups based on search query
   const filteredGroups = useMemo(() => {
     if (!searchQuery.trim()) return groups;
-    return groups.filter(group => 
-      group.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      group.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    return groups.filter(
+      group =>
+        group.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        group.description?.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [groups, searchQuery]);
 
@@ -58,19 +51,22 @@ const GroupsScreen: React.FC<Props> = ({ navigation }) => {
       <TouchableOpacity onPress={() => navigation.navigate('EditGroup', { group })}>
         <Card style={styles.groupCard}>
           <View style={styles.groupHeader}>
-            <View style={[styles.groupColorIndicator, { backgroundColor: group.color || themeColors.primary }]} />
+            <View
+              style={[
+                styles.groupColorIndicator,
+                { backgroundColor: group.color || themeColors.primary },
+              ]}
+            />
             <View style={styles.groupInfo}>
               <Text style={styles.groupName}>{group.name}</Text>
-              <Text style={styles.groupDescription}>
-                {group.description || 'No description'}
-              </Text>
+              <Text style={styles.groupDescription}>{group.description || 'No description'}</Text>
             </View>
             <View style={styles.groupStats}>
               <Text style={styles.groupAmount}>₹{totalAmount.toFixed(2)}</Text>
               <Text style={styles.groupExpenseCount}>{expenseCount} expenses</Text>
             </View>
           </View>
-          
+
           <View style={styles.groupFooter}>
             <View style={styles.groupMembers}>
               <Users size={16} color={themeColors.textSecondary} />
@@ -91,7 +87,7 @@ const GroupsScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <SafeAreaView edges={['top']} />
-      
+
       <View style={styles.header}>
         <View style={styles.headerContent}>
           <Text style={styles.headerTitle}>Expense Groups</Text>
@@ -133,10 +129,7 @@ const GroupsScreen: React.FC<Props> = ({ navigation }) => {
       </View>
 
       {/* Groups List */}
-      <ScrollView 
-        style={styles.groupsList} 
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView style={styles.groupsList} showsVerticalScrollIndicator={false}>
         {isFetching && groups.length === 0 ? (
           <Card style={styles.emptyState}>
             <Text style={styles.emptyTitle}>Loading groups...</Text>
@@ -147,16 +140,10 @@ const GroupsScreen: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.emptySubtitle}>
               {error instanceof Error ? error.message : 'Unknown error occurred'}
             </Text>
-            <Button
-              title="Retry"
-              onPress={() => refetch()}
-              style={styles.createButton}
-            />
+            <Button title="Retry" onPress={() => refetch()} style={styles.createButton} />
           </Card>
         ) : filteredGroups.length > 0 ? (
-          filteredGroups.map((group) => (
-            <GroupCard key={group.id} group={group} />
-          ))
+          filteredGroups.map(group => <GroupCard key={group.id} group={group} />)
         ) : (
           <Card style={styles.emptyState}>
             <Users size={48} color={themeColors.textTertiary} />
@@ -164,10 +151,9 @@ const GroupsScreen: React.FC<Props> = ({ navigation }) => {
               {searchQuery ? 'No groups found' : 'No groups yet'}
             </Text>
             <Text style={styles.emptySubtitle}>
-              {searchQuery 
+              {searchQuery
                 ? 'Try adjusting your search terms'
-                : 'Create your first group to start organizing expenses'
-              }
+                : 'Create your first group to start organizing expenses'}
             </Text>
             {!searchQuery && (
               <Button
@@ -181,8 +167,8 @@ const GroupsScreen: React.FC<Props> = ({ navigation }) => {
       </ScrollView>
 
       {/* Floating Action Button */}
-      <TouchableOpacity 
-        style={styles.fab} 
+      <TouchableOpacity
+        style={styles.fab}
         onPress={() => navigation.navigate('AddGroup')}
         activeOpacity={0.8}
       >

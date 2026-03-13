@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -40,19 +41,19 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
   const recordSettlementMutation = useRecordSettlement();
 
   // Fetch real data using hooks
-  const { data: expenses = [], isLoading: expensesLoading, error: expensesError } = useBillExpenses(group.id);
-  const { data: balances = [], isLoading: balancesLoading } = useGroupBalances(group.id, group.members);
-  const { data: settlements = [], isLoading: settlementsLoading } = useCalculateSettlements(balances);
+  const {
+    data: expenses = [],
+    isLoading: expensesLoading,
+    error: expensesError,
+  } = useBillExpenses(group.id);
+  const { data: balances = [], isLoading: balancesLoading } = useGroupBalances(
+    group.id,
+    group.members
+  );
+  const { data: settlements = [], isLoading: settlementsLoading } =
+    useCalculateSettlements(balances);
 
   const [activeTab, setActiveTab] = useState<'expenses' | 'balances' | 'settle'>('expenses');
-
-  // Debug logging
-  console.log('🔍 GroupDetailsScreen Debug Info:');
-  console.log('- Group ID:', group.id, 'Type:', typeof group.id);
-  console.log('- Expenses loading:', expensesLoading);
-  console.log('- Expenses error:', expensesError);
-  console.log('- Expenses count:', expenses.length);
-  console.log('- Expenses data:', expenses);
 
   const addExpense = () => {
     (navigation as any).navigate('AddBillExpense', {
@@ -64,7 +65,9 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
   const handleSettleUp = async (settlement: Settlement) => {
     Alert.alert(
       'Settle Up',
-      `Record that ${settlement.from.name} paid ${settlement.to.name} ₹${settlement.amount.toFixed(2)}?`,
+      `Record that ${settlement.from.name} paid ${settlement.to.name} ₹${settlement.amount.toFixed(
+        2
+      )}?`,
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -79,7 +82,7 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
                 currency: settlement.currency,
                 note: `Settlement between ${settlement.from.name} and ${settlement.to.name}`,
               });
-              
+
               Alert.alert('Success', 'Payment recorded successfully!');
             } catch (error) {
               console.error('Error recording settlement:', error);
@@ -179,10 +182,7 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
       </View>
       <View style={styles.settlementActions}>
         <Text style={styles.settlementAmount}>₹{settlement.amount.toFixed(2)}</Text>
-        <TouchableOpacity
-          style={styles.settleButton}
-          onPress={() => handleSettleUp(settlement)}
-        >
+        <TouchableOpacity style={styles.settleButton} onPress={() => handleSettleUp(settlement)}>
           <CheckCircle size={20} color={themeColors.secondary} />
           <Text style={styles.settleButtonText}>Settle</Text>
         </TouchableOpacity>
@@ -283,9 +283,7 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
             {balancesLoading ? (
               <Text style={styles.emptyTitle}>Calculating balances...</Text>
             ) : (
-              balances.map(balance => (
-                <BalanceItem key={balance.person.id} balance={balance} />
-              ))
+              balances.map(balance => <BalanceItem key={balance.person.id} balance={balance} />)
             )}
           </Card>
         )}

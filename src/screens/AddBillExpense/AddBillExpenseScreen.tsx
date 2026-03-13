@@ -171,10 +171,8 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
         groupId: groupId.toString(), // Ensure groupId is always a string
       };
 
-      console.log('💾 Saving expense:', expense);
-      
       await addBillExpenseMutation.mutateAsync(expense);
-      
+
       Alert.alert('Success', 'Expense added successfully!', [
         { text: 'OK', onPress: () => (navigation as any).goBack() },
       ]);

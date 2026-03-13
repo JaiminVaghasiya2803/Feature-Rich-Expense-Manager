@@ -17,30 +17,24 @@ const AppContainer = () => {
   const { showSplash, finishSplash } = useSplash();
   const { isLocked, isEnabled } = useSecurity();
 
-  // Debug logging
-  console.log(
-    '🏠 AppContainer render - showSplash:',
-    showSplash,
-    'isEnabled:',
-    isEnabled,
-    'isLocked:',
-    isLocked
-  );
-
-  // Show splash screen first
+  if (__DEV__) {
+    console.log(
+      '🏠 AppContainer render - showSplash:',
+      showSplash,
+      'isEnabled:',
+      isEnabled,
+      'isLocked:',
+      isLocked
+    );
+  }
   if (showSplash) {
-    console.log('🌟 Showing splash screen');
     return <SplashScreen onFinish={finishSplash} />;
   }
 
-  // Show app lock screen if security is enabled and app is locked
   if (isEnabled && isLocked) {
-    console.log('🔒 Showing app lock screen');
     return <AppLockScreen />;
   }
 
-  // Show main app
-  console.log('📱 Showing main app');
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right']}>
       <NavigationContainer>

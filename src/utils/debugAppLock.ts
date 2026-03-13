@@ -20,14 +20,13 @@ export const debugAppLock = {
         STORAGE_KEYS.AUTH_METHOD,
         STORAGE_KEYS.PASSWORD_HASH,
       ]);
-      
+
       const result = {
         enabled: values[0][1],
         method: values[1][1],
         passwordHash: values[2][1],
       };
-      
-      console.log('🔍 Current AsyncStorage values:', result);
+
       return result;
     } catch (error) {
       console.error('❌ Error checking storage:', error);
@@ -42,7 +41,7 @@ export const debugAppLock = {
       let hash = 0;
       for (let i = 0; i < password.length; i++) {
         const char = password.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
+        hash = (hash << 5) - hash + char;
         hash = hash & hash;
       }
       const hashedPassword = hash.toString();
@@ -53,13 +52,11 @@ export const debugAppLock = {
         [STORAGE_KEYS.PASSWORD_HASH, hashedPassword],
       ]);
 
-      console.log('✅ Test app lock setup complete');
-      console.log('🔑 Test password:', password);
-      console.log('🔒 App should lock on next reload');
-      
       return true;
     } catch (error) {
-      console.error('❌ Error setting up test lock:', error);
+      if (__DEV__) {
+        console.error('❌ Error setting up test lock:', error);
+      }
       return false;
     }
   },
@@ -73,7 +70,6 @@ export const debugAppLock = {
         STORAGE_KEYS.PASSWORD_HASH,
       ]);
 
-      console.log('✅ App lock data cleared');
       return true;
     } catch (error) {
       console.error('❌ Error clearing app lock:', error);
@@ -86,7 +82,6 @@ export const debugAppLock = {
     try {
       const storedHash = await AsyncStorage.getItem(STORAGE_KEYS.PASSWORD_HASH);
       if (!storedHash) {
-        console.log('❌ No password hash found');
         return false;
       }
 
@@ -94,47 +89,18 @@ export const debugAppLock = {
       let hash = 0;
       for (let i = 0; i < password.length; i++) {
         const char = password.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
+        hash = (hash << 5) - hash + char;
         hash = hash & hash;
       }
       const inputHash = hash.toString();
 
       const isValid = inputHash === storedHash;
-      console.log('🔍 Password test result:', {
-        input: password,
-        inputHash,
-        storedHash,
-        isValid
-      });
-
       return isValid;
     } catch (error) {
       console.error('❌ Error testing password:', error);
       return false;
     }
   },
-
-  // Log current state
-  logState(securityContext: unknown) {
-    console.log('📊 Current Security State:', {
-      isLocked: securityContext.isLocked,
-      isEnabled: securityContext.isEnabled,
-      authMethod: securityContext.authMethod,
-      hasPassword: securityContext.hasPassword,
-      hasBiometric: securityContext.hasBiometric,
-    });
-  }
 };
-
-// Global access for debugging
-if (__DEV__) {
-  (global as any).debugAppLock = debugAppLock;
-  console.log('🛠️ Debug utility available: global.debugAppLock');
-  console.log('📝 Usage examples:');
-  console.log('  - global.debugAppLock.checkStorage()');
-  console.log('  - global.debugAppLock.setupTestLock("mypassword")');
-  console.log('  - global.debugAppLock.testPassword("mypassword")');
-  console.log('  - global.debugAppLock.clearAppLock()');
-}
 
 export default debugAppLock;
