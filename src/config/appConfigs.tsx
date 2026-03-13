@@ -19,6 +19,8 @@ import {
   GroupDetailsScreen,
 } from '../screens';
 
+import ThemeSettingsScreen from '../screens/ThemeSettings/ThemeSettingsScreen';
+
 const Stack = createNativeStackNavigator();
 
 // Stack Navigators for each tab
@@ -57,6 +59,7 @@ const SplitExpensesStack = () => (
 const SettingsStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="Settings" component={SettingsScreen} />
+    <Stack.Screen name="ThemeSettings" component={ThemeSettingsScreen} />
   </Stack.Navigator>
 );
 

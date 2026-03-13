@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, ViewStyle, Animated } from 'react-native';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useCustomTheme } from '../../contexts/CustomThemeContext';
 import { getThemeColors } from '../../styles/colors';
 import { useEntranceAnimation } from '../../hooks/useAnimations';
 
@@ -22,7 +23,8 @@ const Card: React.FC<CardProps> = ({
   delay = 0,
 }) => {
   const { theme } = useTheme();
-  const themeColors = getThemeColors(theme);
+  const { customTheme } = useCustomTheme();
+  const themeColors = getThemeColors(theme, customTheme || undefined);
   const { startAnimation, animatedStyle } = useEntranceAnimation(animated, delay);
 
   useEffect(() => {

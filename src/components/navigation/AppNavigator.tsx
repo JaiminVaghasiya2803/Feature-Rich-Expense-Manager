@@ -1,5 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { 
   Receipt, 
   Users, 
@@ -15,6 +17,7 @@ import {
 import { TabConfig } from './BottomTabBar';
 import CustomBottomTabBar from './CustomBottomTabBar';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useCustomTheme } from '../../contexts/CustomThemeContext';
 import { getThemeColors } from '../../styles/colors';
 
 const Tab = createBottomTabNavigator();
@@ -48,12 +51,21 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({
   tabBarStyle = 'default',
 }) => {
   const { theme } = useTheme();
-  const themeColors = getThemeColors(theme);
+  const { customTheme } = useCustomTheme();
+  const themeColors = getThemeColors(theme, customTheme || undefined);
+  const insets = useSafeAreaInsets();
   
   const getTabBarStyle = () => {
+    const baseStyle = {
+      paddingBottom: Math.max(insets.bottom, 12),
+      paddingTop: 12,
+      height: 80 + Math.max(insets.bottom, 0),
+    };
+
     switch (tabBarStyle) {
       case 'rounded':
         return {
+          ...baseStyle,
           backgroundColor: themeColors.surface,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
@@ -66,6 +78,7 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({
         };
       case 'floating':
         return {
+          ...baseStyle,
           backgroundColor: themeColors.surface,
           borderRadius: 25,
           marginHorizontal: 20,
@@ -80,6 +93,7 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({
         };
       default:
         return {
+          ...baseStyle,
           backgroundColor: themeColors.surface,
           borderTopColor: themeColors.borderLight,
         };
@@ -94,15 +108,14 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({
       ) : undefined}
       screenOptions={{
         headerShown: false,
-        tabBarStyle: customTabBar ? undefined : {
-          paddingBottom: 8,
-          paddingTop: 8,
-          height: 70,
-          ...getTabBarStyle(),
-        },
+        tabBarStyle: customTabBar ? undefined : getTabBarStyle(),
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: '500',
+          marginTop: 4,
+        },
+        tabBarIconStyle: {
+          marginBottom: 2,
         },
         tabBarActiveTintColor: themeColors.primary,
         tabBarInactiveTintColor: themeColors.textSecondary,

@@ -1,13 +1,15 @@
 import { ColorSchemeName } from 'react-native';
-import { getThemeColors } from '../../styles/colors';
+import { getThemeColors, ThemeColors } from '../../styles/colors';
 import { CreateGroupProps } from './interface';
 
 export const getStyles = ({
   theme,
+  customTheme,
 }: {
   theme: ColorSchemeName;
+  customTheme?: Partial<ThemeColors>;
 }): CreateGroupProps.CreateGroupStyles => {
-  const themeColors = getThemeColors(theme);
+  const themeColors = getThemeColors(theme, customTheme);
   
   return {
     container: {

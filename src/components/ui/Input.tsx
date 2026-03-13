@@ -9,6 +9,7 @@ import {
   Animated,
 } from 'react-native';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useCustomTheme } from '../../contexts/CustomThemeContext';
 import { getThemeColors } from '../../styles/colors';
 
 interface InputProps extends TextInputProps {
@@ -31,7 +32,8 @@ const Input: React.FC<InputProps> = ({
   ...props
 }) => {
   const { theme } = useTheme();
-  const themeColors = getThemeColors(theme);
+  const { customTheme } = useCustomTheme();
+  const themeColors = getThemeColors(theme, customTheme || undefined);
   const borderColorAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
 

@@ -9,6 +9,7 @@ import {
   Animated,
 } from 'react-native';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useCustomTheme } from '../../contexts/CustomThemeContext';
 import { getThemeColors } from '../../styles/colors';
 import { usePressAnimation } from '../../hooks/useAnimations';
 
@@ -39,7 +40,8 @@ const Button: React.FC<ButtonProps> = ({
   animated = true,
 }) => {
   const { theme } = useTheme();
-  const themeColors = getThemeColors(theme);
+  const { customTheme } = useCustomTheme();
+  const themeColors = getThemeColors(theme, customTheme || undefined);
   const { pressIn, pressOut, animatedStyle } = usePressAnimation(
     animated && !disabled && !loading
   );

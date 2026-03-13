@@ -16,6 +16,7 @@ import Input from '../../components/ui/Input';
 import { createUseStyles } from '../../styles/createUseStyles';
 import { getThemeColors } from '../../styles/colors';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useCustomTheme } from '../../contexts/CustomThemeContext';
 import { useAddGroup } from '../../hooks/useAddGroup';
 import { getStyles } from './styles';
 import { apiClient } from '../../api/client';
@@ -28,8 +29,9 @@ interface Props {
 
 const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
   const { theme } = useTheme();
-  const themeColors = getThemeColors(theme);
-  const styles = useStyles({ theme });
+  const { customTheme } = useCustomTheme();
+  const themeColors = getThemeColors(theme, customTheme || undefined);
+  const styles = useStyles({ theme, customTheme: customTheme || undefined });
   const addGroupMutation = useAddGroup();
   
   const [groupName, setGroupName] = useState('');

@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
+import { View, StyleSheet } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import NetInfo from '@react-native-community/netinfo';
 
 import { initQueue } from './queue/mutationQueue';
@@ -10,9 +12,11 @@ import QueryProvider from './providers/QueryProvider';
 import { AppProvider } from './contexts/AppContext';
 import { BillSplitProvider } from './contexts/BillSplitContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { CustomThemeProvider } from './contexts/CustomThemeContext';
+import { SplashProvider } from './contexts/SplashContext';
 import AppContainer from './components/AppContainer';
-import { StatusBar, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import FullScreenBackground from './components/FullScreenBackground';
+import StatusBarManager from './components/StatusBarManager';
 
 const App = () => {
   useEffect(() => {
@@ -40,20 +44,28 @@ const App = () => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaProvider>
       <Provider store={store}>
-        <StatusBar barStyle="dark-content" />
         <QueryProvider>
           <ThemeProvider>
-            <AppProvider>
-              <BillSplitProvider>
-                <AppContainer />
-              </BillSplitProvider>
-            </AppProvider>
+            <CustomThemeProvider>
+              <StatusBarManager />
+              <FullScreenBackground>
+                <View style={styles.container}>
+                  <SplashProvider>
+                    <AppProvider>
+                      <BillSplitProvider>
+                        <AppContainer />
+                      </BillSplitProvider>
+                    </AppProvider>
+                  </SplashProvider>
+                </View>
+              </FullScreenBackground>
+            </CustomThemeProvider>
           </ThemeProvider>
         </QueryProvider>
       </Provider>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 

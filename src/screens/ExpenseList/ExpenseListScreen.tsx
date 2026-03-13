@@ -24,6 +24,7 @@ import { Expense, ExpenseGroup } from '../../types/expense';
 import { createUseStyles } from '../../styles/createUseStyles';
 import { getThemeColors } from '../../styles/colors';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useCustomTheme } from '../../contexts/CustomThemeContext';
 
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { getStyles } from './styles';
@@ -32,8 +33,9 @@ const useStyles = createUseStyles(getStyles);
 
 const ExpenseListScreen = () => {
   const { theme } = useTheme();
-  const themeColors = getThemeColors(theme);
-  const styles = useStyles({ theme });
+  const { customTheme } = useCustomTheme();
+  const themeColors = getThemeColors(theme, customTheme || undefined);
+  const styles = useStyles({ theme, customTheme: customTheme || undefined });
   
   const navigation = useNavigation<NavigationProp<any>>();
   const insets = useSafeAreaInsets();

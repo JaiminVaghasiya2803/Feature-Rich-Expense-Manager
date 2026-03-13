@@ -25,7 +25,7 @@ const CustomBottomTabBar: React.FC<CustomBottomTabBarProps> = ({
   descriptors,
   navigation,
   showLabels = true,
-  tabBarHeight = 70,
+  tabBarHeight = 80,
   activeBackgroundColor = theme.colors.primary,
   inactiveBackgroundColor = 'transparent',
 }) => {
@@ -137,13 +137,13 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    height: 70,
+    height: 80,
   },
   tab: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
+    paddingVertical: 12,
     marginHorizontal: 4,
     marginVertical: 8,
     borderRadius: theme.borderRadius.lg,
@@ -153,7 +153,10 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     position: 'relative',
-    marginBottom: 4,
+    marginBottom: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 24,
   },
   badge: {
     position: 'absolute',

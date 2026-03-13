@@ -1,0 +1,55 @@
+import { ViewStyle, TextStyle } from 'react-native';
+
+export namespace ThemeSettingsProps {
+  export interface ThemeSettingsStyles {
+    container: ViewStyle;
+    header: ViewStyle;
+    headerTitle: TextStyle;
+    headerSubtitle: TextStyle;
+    categoryTabs: ViewStyle;
+    categoryTab: ViewStyle;
+    selectedCategoryTab: ViewStyle;
+    categoryTabText: TextStyle;
+    selectedCategoryTabText: TextStyle;
+    content: ViewStyle;
+    sectionCard: ViewStyle;
+    sectionTitle: TextStyle;
+    sectionSubtitle: TextStyle;
+    themeOptions: ViewStyle;
+    themeOption: ViewStyle;
+    selectedThemeOption: ViewStyle;
+    themeOptionText: TextStyle;
+    selectedThemeOptionText: TextStyle;
+    presetsScrollView: ViewStyle;
+    presetThemes: ViewStyle;
+    presetTheme: ViewStyle;
+    presetColors: ViewStyle;
+    presetColor: ViewStyle;
+    presetName: TextStyle;
+    presetDescription: TextStyle;
+    themePreview: ViewStyle;
+    previewHeader: ViewStyle;
+    previewHeaderText: TextStyle;
+    previewContent: ViewStyle;
+    previewCard: ViewStyle;
+    previewCardTitle: TextStyle;
+    previewCardText: TextStyle;
+    previewButton: ViewStyle;
+    previewButtonText: TextStyle;
+    previewFooter: ViewStyle;
+    previewFooterText: TextStyle;
+    themeCategoryTabs: ViewStyle;
+    themeCategoryTab: ViewStyle;
+    selectedThemeCategoryTab: ViewStyle;
+    themeCategoryTabText: TextStyle;
+    selectedThemeCategoryTabText: TextStyle;
+    categoryDescription: TextStyle;
+    colorPickerContainer: ViewStyle;
+    colorLabel: TextStyle;
+    colorOptions: ViewStyle;
+    colorOption: ViewStyle;
+    selectedColor: ViewStyle;
+    footer: ViewStyle;
+    resetButton: ViewStyle;
+  }
+}

@@ -111,5 +111,18 @@ export const darkColors: ThemeColors = {
   overlayLight: 'rgba(0, 0, 0, 0.4)',
 };
 
-export const getThemeColors = (theme: ColorSchemeName): ThemeColors =>
-  theme === 'dark' ? darkColors : lightColors;
+export const getThemeColors = (
+  theme: ColorSchemeName, 
+  customColors?: Partial<ThemeColors>
+): ThemeColors => {
+  const baseColors = theme === 'dark' ? darkColors : lightColors;
+  
+  if (customColors) {
+    return {
+      ...baseColors,
+      ...customColors,
+    };
+  }
+  
+  return baseColors;
+};

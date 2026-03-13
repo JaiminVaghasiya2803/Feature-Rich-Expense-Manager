@@ -21,14 +21,20 @@ import Card from '../../components/ui/Card';
 import { createUseStyles } from '../../styles/createUseStyles';
 import { getThemeColors } from '../../styles/colors';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useCustomTheme } from '../../contexts/CustomThemeContext';
 import { getStyles } from './styles';
 
 const useStyles = createUseStyles(getStyles);
 
-const SettingsScreen = () => {
+interface Props {
+  navigation: any;
+}
+
+const SettingsScreen: React.FC<Props> = ({ navigation }) => {
   const { theme, isDark, toggleTheme } = useTheme();
-  const themeColors = getThemeColors(theme);
-  const styles = useStyles({ theme });
+  const { customTheme } = useCustomTheme();
+  const themeColors = getThemeColors(theme, customTheme || undefined);
+  const styles = useStyles({ theme, customTheme: customTheme || undefined });
 
   const SettingItem = ({ 
     icon, 
@@ -78,8 +84,9 @@ const SettingsScreen = () => {
             
             <SettingItem
               icon={<Palette size={24} color={themeColors.secondary} />}
-              title="App Theme"
-              subtitle="Bill Splitter - Made for India"
+              title="Theme Customization"
+              subtitle="Customize colors and appearance"
+              onPress={() => navigation.navigate('ThemeSettings')}
             />
           </Card>
         </View>
