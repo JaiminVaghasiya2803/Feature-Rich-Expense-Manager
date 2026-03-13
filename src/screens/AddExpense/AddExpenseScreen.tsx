@@ -33,7 +33,7 @@ const AddExpenseScreen = () => {
   const [title, setTitle] = useState('');
   const [amount, setAmount] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ExpenseCategory>('other');
-  const [selectedGroupId, setSelectedGroupId] = useState<number | undefined>();
+  const [selectedGroupId, setSelectedGroupId] = useState<string | number | undefined>();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [errors, setErrors] = useState<{ title?: string; amount?: string }>({});
 
@@ -50,7 +50,7 @@ const AddExpenseScreen = () => {
 
   // Memoized groups data
   const groups: ExpenseGroup[] = useMemo(() => {
-    return groupsData?.pages?.flat() ?? [];
+    return groupsData || [];
   }, [groupsData]);
 
   // Memoized form validation
@@ -152,10 +152,13 @@ const AddExpenseScreen = () => {
             leftIcon={<Tag size={20} color={themeColors.textTertiary} />}
           />
 
-          {groups.length > 0 && (
+          {groups.length > 0 ? (
             <View style={styles.groupSection}>
               <Text style={styles.sectionLabel}>
                 <Users size={16} color={themeColors.textPrimary} /> Group (Optional)
+              </Text>
+              <Text style={[styles.sectionLabel, { fontSize: 12, fontWeight: '400', color: themeColors.textSecondary, marginBottom: 12 }]}>
+                Assign this expense to a group for bill splitting
               </Text>
               <View style={styles.groupGrid}>
                 <TouchableOpacity
@@ -169,9 +172,14 @@ const AddExpenseScreen = () => {
                       { backgroundColor: themeColors.borderMedium },
                     ]}
                   />
-                  <Text style={[styles.groupText, !selectedGroupId && styles.selectedGroupText]}>
-                    No Group
-                  </Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[styles.groupText, !selectedGroupId && styles.selectedGroupText]}>
+                      Personal Expense
+                    </Text>
+                    <Text style={[styles.groupDescription, !selectedGroupId && styles.selectedGroupDescription]}>
+                      Not shared with any group
+                    </Text>
+                  </View>
                 </TouchableOpacity>
 
                 {groups.map(group => (
@@ -182,16 +190,44 @@ const AddExpenseScreen = () => {
                     activeOpacity={0.7}
                   >
                     <View style={[styles.groupColorIndicator, { backgroundColor: group.color }]} />
-                    <Text
-                      style={[
-                        styles.groupText,
-                        selectedGroupId === group.id && styles.selectedGroupText,
-                      ]}
-                    >
-                      {group.name}
-                    </Text>
+                    <View style={{ flex: 1 }}>
+                      <Text
+                        style={[
+                          styles.groupText,
+                          selectedGroupId === group.id && styles.selectedGroupText,
+                        ]}
+                      >
+                        {group.name}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.groupDescription,
+                          selectedGroupId === group.id && styles.selectedGroupDescription,
+                        ]}
+                      >
+                        {group.members?.length || 0} members • {group.currency || 'INR'}
+                      </Text>
+                    </View>
                   </TouchableOpacity>
                 ))}
+              </View>
+            </View>
+          ) : (
+            <View style={styles.groupSection}>
+              <Text style={styles.sectionLabel}>
+                <Users size={16} color={themeColors.textSecondary} /> Groups
+              </Text>
+              <View style={styles.noGroupsMessage}>
+                <Text style={styles.noGroupsText}>
+                  No groups available. Create a group to split expenses with others.
+                </Text>
+                <TouchableOpacity
+                  style={styles.createGroupButton}
+                  onPress={() => navigation.navigate('CreateGroup' as never)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.createGroupButtonText}>Create Group</Text>
+                </TouchableOpacity>
               </View>
             </View>
           )}

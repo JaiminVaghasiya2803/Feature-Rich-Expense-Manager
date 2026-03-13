@@ -19,6 +19,16 @@ export type ExpenseGroup = {
   color: string;
   createdAt: string;
   updatedAt: string;
+  members?: GroupMember[];
+  currency?: string;
+};
+
+export type GroupMember = {
+  id: string;
+  name: string;
+  email?: string;
+  avatar?: string;
+  color?: string;
 };
 
 export type Expense = {
@@ -26,7 +36,7 @@ export type Expense = {
   title: string;
   amount: number;
   category: ExpenseCategory;
-  groupId?: number;
+  groupId?: number | string;
   date: string;
   updatedAt: string;
 };

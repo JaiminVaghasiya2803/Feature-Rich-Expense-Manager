@@ -89,10 +89,15 @@ const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
       // Test API connectivity first
       console.log('🔍 Testing API connectivity...');
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        
         const testResponse = await fetch(`${apiClient.defaults.baseURL}/health`, {
           method: 'GET',
-          timeout: 5000,
+          signal: controller.signal,
         });
+        
+        clearTimeout(timeoutId);
         console.log('🏥 Health check response:', testResponse.status);
       } catch (healthError) {
         console.warn('⚠️ Health check failed (server might not have /health endpoint):', healthError);
@@ -105,6 +110,14 @@ const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
         name: groupName.trim(),
         description: description.trim(),
         color: selectedColor,
+        currency: currency,
+        members: members.map(member => ({
+          id: member.id,
+          name: member.name,
+          email: member.email,
+          avatar: member.avatar,
+          color: member.color,
+        })),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -115,7 +128,7 @@ const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
       console.log('✅ Group created successfully:', result);
       
       Alert.alert('Success', 'Group created successfully!', [
-        { text: 'OK', onPress: () => navigation.goBack() }
+        { text: 'OK', onPress: () => (navigation as any).goBack() }
       ]);
     } catch (error) {
       console.error('❌ Error creating group:', error);
@@ -214,7 +227,7 @@ const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
       <SafeAreaView edges={['top']} />
       
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => (navigation as any).goBack()}>
           <ArrowLeft size={24} color={themeColors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Create Group</Text>
@@ -253,7 +266,7 @@ const CreateGroupScreen: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.sectionTitle}>Members ({members.length})</Text>
           
           <View style={styles.membersList}>
-            {members.map((member, _index) => (
+            {members.map((member, index) => (
               <MemberItem 
                 key={member.id} 
                 member={member} 

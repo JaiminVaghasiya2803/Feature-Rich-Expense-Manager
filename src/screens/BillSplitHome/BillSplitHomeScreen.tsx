@@ -8,6 +8,9 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Plus, Users, Receipt, TrendingUp } from 'lucide-react-native';
 import { BillGroup } from '../../types/billSplit';
+import { ExpenseGroup } from '../../types/expense';
+import { useGroups } from '../../hooks/useGroups';
+import { convertExpenseGroupToBillGroup } from '../../utils/groupConverters';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import { createUseStyles } from '../../styles/createUseStyles';
@@ -28,59 +31,28 @@ const BillSplitHomeScreen: React.FC<Props> = ({ navigation }) => {
   const themeColors = getThemeColors(theme, customTheme || undefined);
   const styles = useStyles({ theme, customTheme: customTheme || undefined });
   
+  const { data: expenseGroups = [], isLoading, error } = useGroups();
   const [groups, setGroups] = useState<BillGroup[]>([]);
   const [totalBalance] = useState(0);
 
   useEffect(() => {
-     loadGroups();
-  }, []);
-
-  const loadGroups = async () => {
-    // Mock data for demonstration
-    const mockGroups: BillGroup[] = [
-      {
-        id: '1',
-        name: 'Weekend Trip',
-        description: 'Cabin rental and activities',
-        members: [
-          { id: '1', name: 'Rahul Sharma', color: '#FF6B6B' },
-          { id: '2', name: 'Priya Patel', color: '#4ECDC4' },
-          { id: '3', name: 'Amit Kumar', color: '#45B7D1' },
-        ],
-        expenses: [],
-        currency: 'INR',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        color: '#FF6B6B',
-      },
-      {
-        id: '2',
-        name: 'Dinner Party',
-        description: 'Italian restaurant',
-        members: [
-          { id: '1', name: 'Rahul Sharma', color: '#FF6B6B' },
-          { id: '4', name: 'Sneha Gupta', color: '#96CEB4' },
-        ],
-        expenses: [],
-        currency: 'INR',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        color: '#4ECDC4',
-      },
-    ];
-    setGroups(mockGroups);
-  };
+    // Convert ExpenseGroups to BillGroups using utility function
+    const convertedGroups: BillGroup[] = expenseGroups.map(convertExpenseGroupToBillGroup);
+    setGroups(convertedGroups);
+  }, [expenseGroups]);
 
   const createNewGroup = () => {
+    // @ts-ignore - navigation type will be fixed later
     navigation.navigate('CreateGroup');
   };
 
   const openGroup = (group: BillGroup) => {
+    // @ts-ignore - navigation type will be fixed later
     navigation.navigate('GroupDetails', { group });
   };
 
   const GroupCard = ({ group }: { group: BillGroup }) => {
-    const totalExpenses = group.expenses.reduce((sum, _expense) => sum + expense.amount, 0);
+    const totalExpenses = group.expenses.reduce((sum, expense) => sum + expense.amount, 0);
     
     return (
       <TouchableOpacity onPress={() => openGroup(group)}>
@@ -100,7 +72,10 @@ const BillSplitHomeScreen: React.FC<Props> = ({ navigation }) => {
           <View style={styles.groupMembers}>
             <Users size={16} color={themeColors.textSecondary} />
             <Text style={styles.membersList}>
-              {group.members.map(m => m.name).join(', ')}
+              {group.members.length > 0 
+                ? group.members.map(m => m.name).join(', ')
+                : 'No members'
+              }
             </Text>
           </View>
         </Card>
@@ -142,7 +117,18 @@ const BillSplitHomeScreen: React.FC<Props> = ({ navigation }) => {
         </View>
 
         <ScrollView style={styles.groupsList} showsVerticalScrollIndicator={false}>
-          {groups.length > 0 ? (
+          {isLoading ? (
+            <Card style={styles.emptyState}>
+              <Text style={styles.emptyTitle}>Loading groups...</Text>
+            </Card>
+          ) : error ? (
+            <Card style={styles.emptyState}>
+              <Text style={styles.emptyTitle}>Error loading groups</Text>
+              <Text style={styles.emptySubtitle}>
+                Please check your connection and try again
+              </Text>
+            </Card>
+          ) : groups.length > 0 ? (
             groups.map((group) => (
               <GroupCard key={group.id} group={group} />
             ))

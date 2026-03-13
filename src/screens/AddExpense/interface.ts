@@ -14,6 +14,12 @@ export namespace AddExpenseProps {
     groupColorIndicator: ViewStyle;
     groupText: TextStyle;
     selectedGroupText: TextStyle;
+    groupDescription: TextStyle;
+    selectedGroupDescription: TextStyle;
+    noGroupsMessage: ViewStyle;
+    noGroupsText: TextStyle;
+    createGroupButton: ViewStyle;
+    createGroupButtonText: TextStyle;
     submitButton: ViewStyle;
   };
 

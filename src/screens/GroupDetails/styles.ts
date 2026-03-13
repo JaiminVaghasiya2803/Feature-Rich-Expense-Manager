@@ -282,6 +282,24 @@ export const getStyles = ({
       fontWeight: '600',
       lineHeight: 24,
       color: themeColors.textPrimary,
+      marginBottom: 8,
+    },
+    settlementActions: {
+      alignItems: 'flex-end',
+    },
+    settleButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      backgroundColor: themeColors.secondary + '20',
+      borderRadius: 16,
+    },
+    settleButtonText: {
+      fontSize: 12,
+      fontWeight: '600',
+      color: themeColors.secondary,
     },
     emptyState: {
       alignItems: 'center',

@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput } from 'reac
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft, Users, Percent, Calculator, Check, IndianRupee } from 'lucide-react-native';
 import { Person, SplitPerson, SplitType, BillExpense } from '../../types/billSplit';
+import { useAddBillExpense } from '../../hooks/useBillExpenses';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
@@ -18,7 +19,7 @@ interface Props {
   route: {
     params: {
       groupMembers: Person[];
-      groupId: string;
+      groupId: string | number;
     };
   };
 }
@@ -27,6 +28,7 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
   const { theme } = useTheme();
   const themeColors = getThemeColors(theme);
   const styles = useStyles({ theme });
+  const addBillExpenseMutation = useAddBillExpense();
 
   const { groupMembers, groupId } = route.params;
 
@@ -150,31 +152,36 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
     return Math.abs(splitTotal - totalAmount) < 0.01;
   };
 
-  const saveExpense = () => {
+  const saveExpense = async () => {
     if (!title.trim() || !amount || !isValidSplit()) {
       Alert.alert('Error', 'Please fill all required fields and ensure split amounts are correct.');
       return;
     }
 
-    const expense: BillExpense = {
-      id: Date.now().toString(),
-      title: title.trim(),
-      description: description.trim(),
-      amount: parseFloat(amount),
-      currency,
-      paidBy,
-      splitType,
-      splitPersons: splitPersons.filter(p => p.isSelected),
-      date: new Date(),
-      groupId,
-    };
+    try {
+      const expense: Omit<BillExpense, 'id'> = {
+        title: title.trim(),
+        description: description.trim(),
+        amount: parseFloat(amount),
+        currency,
+        paidBy,
+        splitType,
+        splitPersons: splitPersons.filter(p => p.isSelected),
+        date: new Date(),
+        groupId: groupId.toString(), // Ensure groupId is always a string
+      };
 
-    // Save expense logic here
-    console.log('Saving expense:', expense);
-
-    Alert.alert('Success', 'Expense added successfully!', [
-      { text: 'OK', onPress: () => navigation.goBack() },
-    ]);
+      console.log('💾 Saving expense:', expense);
+      
+      await addBillExpenseMutation.mutateAsync(expense);
+      
+      Alert.alert('Success', 'Expense added successfully!', [
+        { text: 'OK', onPress: () => (navigation as any).goBack() },
+      ]);
+    } catch (error) {
+      console.error('❌ Error saving expense:', error);
+      Alert.alert('Error', 'Failed to save expense. Please try again.');
+    }
   };
 
   const SplitTypeSelector = () => (
@@ -289,7 +296,7 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
       <SafeAreaView edges={['top']} />
 
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => (navigation as any).goBack()}>
           <ArrowLeft size={24} color={themeColors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Add Expense</Text>
@@ -397,6 +404,7 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
           title="Save Expense"
           onPress={saveExpense}
           disabled={!isValidSplit() || !title.trim() || !amount}
+          loading={addBillExpenseMutation.isPending}
           style={styles.saveButton}
         />
       </View>

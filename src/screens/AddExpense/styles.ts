@@ -60,12 +60,47 @@ export const getStyles = ({
     },
     groupText: {
       fontSize: 16,
-      fontWeight: '400',
+      fontWeight: '500',
       color: themeColors.textPrimary,
     },
     selectedGroupText: {
       color: themeColors.primary,
       fontWeight: '600',
+    },
+    groupDescription: {
+      fontSize: 12,
+      fontWeight: '400',
+      color: themeColors.textSecondary,
+      marginTop: 2,
+    },
+    selectedGroupDescription: {
+      color: themeColors.primary + '80',
+    },
+    noGroupsMessage: {
+      padding: 16,
+      backgroundColor: themeColors.surface,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: themeColors.borderLight,
+      alignItems: 'center',
+    },
+    noGroupsText: {
+      fontSize: 14,
+      fontWeight: '400',
+      color: themeColors.textSecondary,
+      textAlign: 'center',
+      marginBottom: 12,
+    },
+    createGroupButton: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      backgroundColor: themeColors.primary,
+      borderRadius: 8,
+    },
+    createGroupButtonText: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: themeColors.textInverse,
     },
     submitButton: {
       marginTop: 16,

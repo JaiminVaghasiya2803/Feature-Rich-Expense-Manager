@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   ArrowLeft,
@@ -9,11 +9,14 @@ import {
   TrendingUp,
   Calendar,
   DollarSign,
+  CheckCircle,
 } from 'lucide-react-native';
 import { useTheme } from '../contexts/ThemeContext';
 import { getThemeColors } from '../styles/colors';
 import { createUseStyles } from '../styles/createUseStyles';
 import { BillGroup, BillExpense, Balance, Settlement } from '../types/billSplit';
+import { useBillExpenses, useGroupBalances } from '../hooks/useBillExpenses';
+import { useCalculateSettlements, useRecordSettlement } from '../hooks/useSettlements';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { getStyles } from './GroupDetails/styles';
@@ -34,127 +37,58 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
   const { theme } = useTheme();
   const themeColors = getThemeColors(theme);
   const styles = useStyles({ theme });
+  const recordSettlementMutation = useRecordSettlement();
 
-  const [expenses, setExpenses] = useState<BillExpense[]>([]);
-  const [balances, setBalances] = useState<Balance[]>([]);
-  const [settlements, setSettlements] = useState<Settlement[]>([]);
+  // Fetch real data using hooks
+  const { data: expenses = [], isLoading: expensesLoading, error: expensesError } = useBillExpenses(group.id);
+  const { data: balances = [], isLoading: balancesLoading } = useGroupBalances(group.id, group.members);
+  const { data: settlements = [], isLoading: settlementsLoading } = useCalculateSettlements(balances);
+
   const [activeTab, setActiveTab] = useState<'expenses' | 'balances' | 'settle'>('expenses');
 
-  useEffect(() => {
-    loadGroupData();
-  }, []);
-
-  const loadGroupData = () => {
-    // Mock expenses data
-    const mockExpenses: BillExpense[] = [
-      {
-        id: '1',
-        title: 'Dinner at Restaurant',
-        description: 'Indian restaurant',
-        amount: 1200.0,
-        currency: 'INR',
-        paidBy: group.members[0],
-        splitType: 'equal',
-        splitPersons: group.members.map(m => ({
-          ...m,
-          amount: 400.0,
-          percentage: 33.33,
-          isSelected: true,
-        })),
-        date: new Date('2024-03-10'),
-        groupId: group.id,
-      },
-      {
-        id: '2',
-        title: 'Grocery Shopping',
-        description: 'Weekly groceries',
-        amount: 850.0,
-        currency: 'INR',
-        paidBy: group.members[1],
-        splitType: 'percentage',
-        splitPersons: [
-          { ...group.members[0], amount: 425.0, percentage: 50, isSelected: true },
-          { ...group.members[1], amount: 255.0, percentage: 30, isSelected: true },
-          { ...group.members[2], amount: 170.0, percentage: 20, isSelected: true },
-        ],
-        date: new Date('2024-03-09'),
-        groupId: group.id,
-      },
-    ];
-
-    setExpenses(mockExpenses);
-    calculateBalances(mockExpenses);
-  };
-
-  const calculateBalances = (expensesList: BillExpense[]) => {
-    const memberBalances: { [key: string]: number } = {};
-
-    // Initialize balances
-    group.members.forEach(member => {
-      memberBalances[member.id] = 0;
-    });
-
-    // Calculate what each person paid and owes
-    expensesList.forEach(expense => {
-      // Add what the payer paid
-      memberBalances[expense.paidBy.id] += expense.amount;
-
-      // Subtract what each person owes
-      expense.splitPersons.forEach(splitPerson => {
-        if (splitPerson.isSelected) {
-          memberBalances[splitPerson.id] -= splitPerson.amount;
-        }
-      });
-    });
-
-    // Convert to Balance objects
-    const balancesList: Balance[] = group.members.map(member => ({
-      person: member,
-      balance: memberBalances[member.id],
-      currency: group.currency,
-    }));
-
-    setBalances(balancesList);
-    calculateSettlements(balancesList);
-  };
-
-  const calculateSettlements = (balancesList: Balance[]) => {
-    const settlements: Settlement[] = [];
-    const debtors = balancesList.filter(b => b.balance < 0).sort((a, b) => a.balance - b.balance);
-    const creditors = balancesList.filter(b => b.balance > 0).sort((a, b) => b.balance - a.balance);
-
-    let i = 0,
-      j = 0;
-    while (i < debtors.length && j < creditors.length) {
-      const debt = Math.abs(debtors[i].balance);
-      const credit = creditors[j].balance;
-      const amount = Math.min(debt, credit);
-
-      if (amount > 0.01) {
-        // Avoid tiny amounts
-        settlements.push({
-          from: debtors[i].person,
-          to: creditors[j].person,
-          amount,
-          currency: group.currency,
-        });
-      }
-
-      debtors[i].balance += amount;
-      creditors[j].balance -= amount;
-
-      if (Math.abs(debtors[i].balance) < 0.01) i++;
-      if (Math.abs(creditors[j].balance) < 0.01) j++;
-    }
-
-    setSettlements(settlements);
-  };
+  // Debug logging
+  console.log('🔍 GroupDetailsScreen Debug Info:');
+  console.log('- Group ID:', group.id, 'Type:', typeof group.id);
+  console.log('- Expenses loading:', expensesLoading);
+  console.log('- Expenses error:', expensesError);
+  console.log('- Expenses count:', expenses.length);
+  console.log('- Expenses data:', expenses);
 
   const addExpense = () => {
-    navigation.navigate('AddBillExpense', {
+    (navigation as any).navigate('AddBillExpense', {
       groupMembers: group.members,
       groupId: group.id,
     });
+  };
+
+  const handleSettleUp = async (settlement: Settlement) => {
+    Alert.alert(
+      'Settle Up',
+      `Record that ${settlement.from.name} paid ${settlement.to.name} ₹${settlement.amount.toFixed(2)}?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Record Payment',
+          onPress: async () => {
+            try {
+              await recordSettlementMutation.mutateAsync({
+                groupId: group.id,
+                fromPersonId: settlement.from.id,
+                toPersonId: settlement.to.id,
+                amount: settlement.amount,
+                currency: settlement.currency,
+                note: `Settlement between ${settlement.from.name} and ${settlement.to.name}`,
+              });
+              
+              Alert.alert('Success', 'Payment recorded successfully!');
+            } catch (error) {
+              console.error('Error recording settlement:', error);
+              Alert.alert('Error', 'Failed to record payment. Please try again.');
+            }
+          },
+        },
+      ]
+    );
   };
 
   const formatDate = (date: Date) => {
@@ -243,7 +177,16 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
           {settlement.from.name} owes {settlement.to.name}
         </Text>
       </View>
-      <Text style={styles.settlementAmount}>₹{settlement.amount.toFixed(2)}</Text>
+      <View style={styles.settlementActions}>
+        <Text style={styles.settlementAmount}>₹{settlement.amount.toFixed(2)}</Text>
+        <TouchableOpacity
+          style={styles.settleButton}
+          onPress={() => handleSettleUp(settlement)}
+        >
+          <CheckCircle size={20} color={themeColors.secondary} />
+          <Text style={styles.settleButtonText}>Settle</Text>
+        </TouchableOpacity>
+      </View>
     </Card>
   );
 
@@ -254,7 +197,7 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
   }: {
     tab: 'expenses' | 'balances' | 'settle';
     title: string;
-    icon: unknown;
+    icon: React.ComponentType<{ size: number; color: string }>;
   }) => (
     <TouchableOpacity
       style={[
@@ -273,7 +216,7 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
       <SafeAreaView edges={['top']} />
 
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => (navigation as any).goBack()}>
           <ArrowLeft size={24} color={themeColors.textPrimary} />
         </TouchableOpacity>
         <View style={styles.headerInfo}>
@@ -318,7 +261,11 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {activeTab === 'expenses' && (
           <View style={styles.expensesList}>
-            {expenses.length > 0 ? (
+            {expensesLoading ? (
+              <Card style={styles.emptyState}>
+                <Text style={styles.emptyTitle}>Loading expenses...</Text>
+              </Card>
+            ) : expenses.length > 0 ? (
               expenses.map(expense => <ExpenseItem key={expense.id} expense={expense} />)
             ) : (
               <Card style={styles.emptyState}>
@@ -333,15 +280,23 @@ const GroupDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
 
         {activeTab === 'balances' && (
           <Card style={styles.balancesCard}>
-            {balances.map(balance => (
-              <BalanceItem key={balance.person.id} balance={balance} />
-            ))}
+            {balancesLoading ? (
+              <Text style={styles.emptyTitle}>Calculating balances...</Text>
+            ) : (
+              balances.map(balance => (
+                <BalanceItem key={balance.person.id} balance={balance} />
+              ))
+            )}
           </Card>
         )}
 
         {activeTab === 'settle' && (
           <View style={styles.settleContent}>
-            {settlements.length > 0 ? (
+            {settlementsLoading ? (
+              <Card style={styles.emptyState}>
+                <Text style={styles.emptyTitle}>Calculating settlements...</Text>
+              </Card>
+            ) : settlements.length > 0 ? (
               settlements.map((settlement, index) => (
                 <SettlementItem key={index} settlement={settlement} />
               ))

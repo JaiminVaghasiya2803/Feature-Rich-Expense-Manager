@@ -103,7 +103,7 @@ const ExpenseListScreen = () => {
   }, [expenses, sortBy]);
 
   const groups: ExpenseGroup[] = useMemo(() => {
-    return groupsData?.pages?.check.flat() ?? [];
+    return groupsData || [];
   }, [groupsData]);
 
   const totalSpent = useMemo(() => calculateTotal(sortedExpenses), [sortedExpenses]);

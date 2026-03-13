@@ -20,8 +20,9 @@ export const useAddGroup = () => {
         throw error;
       }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       console.log('✅ Mutation successful, invalidating queries');
+      console.log('💾 Created group with members:', data.members?.length || 0);
       // Simply invalidate and refetch instead of optimistic updates
       queryClient.invalidateQueries({ queryKey: ['groups'] });
     },

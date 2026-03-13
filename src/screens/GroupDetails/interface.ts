@@ -56,6 +56,9 @@ export namespace GroupDetailsProps {
     settlementArrow: TextStyle;
     settlementText: TextStyle;
     settlementAmount: TextStyle;
+    settlementActions: ViewStyle;
+    settleButton: ViewStyle;
+    settleButtonText: TextStyle;
     emptyState: ViewStyle;
     emptyTitle: TextStyle;
     emptySubtitle: TextStyle;
