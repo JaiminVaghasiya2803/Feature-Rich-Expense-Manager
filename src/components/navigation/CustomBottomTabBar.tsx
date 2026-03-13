@@ -4,8 +4,7 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Animated,
-  Dimensions,
+   Dimensions,
 } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';

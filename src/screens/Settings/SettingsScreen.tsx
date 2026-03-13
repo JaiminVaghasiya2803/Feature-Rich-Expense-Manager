@@ -109,6 +109,15 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           <Card style={styles.sectionCard}>
             <SettingItem
               icon={<Shield size={24} color={themeColors.success} />}
+              title="App Lock"
+              subtitle="Secure your app with password or biometrics"
+              onPress={() => navigation.navigate('SecuritySettings')}
+            />
+            
+            <View style={styles.separator} />
+            
+            <SettingItem
+              icon={<Shield size={24} color={themeColors.success} />}
               title="Privacy Policy"
               subtitle="How we handle your data"
             />

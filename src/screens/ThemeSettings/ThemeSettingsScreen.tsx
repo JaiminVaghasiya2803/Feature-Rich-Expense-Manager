@@ -12,10 +12,7 @@ import {
   Sun, 
   Moon, 
   Smartphone, 
-  RotateCcw,
-  Check,
-  Eye
-} from 'lucide-react-native';
+ } from 'lucide-react-native';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import { createUseStyles } from '../../styles/createUseStyles';
@@ -27,10 +24,13 @@ import { getStyles } from './styles';
 const useStyles = createUseStyles(getStyles);
 
 interface Props {
-  navigation: any;
+  navigation: {
+    navigate: (screen: string) => void;
+    goBack: () => void;
+  };
 }
 
-const ThemeSettingsScreen: React.FC<Props> = ({ navigation }) => {
+const ThemeSettingsScreen: React.FC<Props> = ({ navigation: _navigation }) => {
   const { theme, setTheme, isDark } = useTheme();
   const { customTheme, setCustomTheme, resetToDefault, isCustomThemeActive } = useCustomTheme();
   const themeColors = getThemeColors(theme, customTheme || undefined);

@@ -362,7 +362,7 @@ const AddBillExpenseScreen: React.FC<Props> = ({ navigation, route }) => {
           </View>
           
           {splitPersons.map((person) => (
-            <PersonSplitItem key={person.id} person={person} />
+            <PersonSplitItem key={person?.id} person={person} />
           ))}
           
           <View style={styles.splitSummary}>

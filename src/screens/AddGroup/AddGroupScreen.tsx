@@ -197,7 +197,7 @@ const AddGroupScreen: React.FC<Props> = ({ navigation }) => {
           {members.length > 0 && (
             <View style={styles.membersList}>
               {members.map((member) => (
-                <MemberItem key={member.id} member={member} />
+                <MemberItem key={member?.id} member={member} />
               ))}
             </View>
           )}

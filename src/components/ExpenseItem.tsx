@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
-import { Edit3, Trash2, Calendar, Tag, Users } from 'lucide-react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Edit3, Trash2, Calendar } from 'lucide-react-native';
 import { Expense, ExpenseGroup } from '../types/expense';
 import { useTheme } from '../contexts/ThemeContext';
 import { getThemeColors } from '../styles/colors';

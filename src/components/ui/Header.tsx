@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ViewStyle, Animated, InteractionManager } from 'react-native';
+import {  Text, StyleSheet, TouchableOpacity, ViewStyle, Animated, InteractionManager } from 'react-native';
 import { ArrowLeft } from 'lucide-react-native';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getThemeColors } from '../../styles/colors';

@@ -20,6 +20,7 @@ import {
 } from '../screens';
 
 import ThemeSettingsScreen from '../screens/ThemeSettings/ThemeSettingsScreen';
+import SecuritySettingsScreen from '../screens/SecuritySettings/SecuritySettingsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -60,6 +61,7 @@ const SettingsStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="Settings" component={SettingsScreen} />
     <Stack.Screen name="ThemeSettings" component={ThemeSettingsScreen} />
+    <Stack.Screen name="SecuritySettings" component={SecuritySettingsScreen} />
   </Stack.Navigator>
 );
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { 
   Receipt, 
@@ -129,7 +128,7 @@ const AppNavigator: React.FC<AppNavigatorProps> = ({
           options={{
             tabBarLabel: tab.label,
             tabBarBadge: tab.badge,
-            tabBarIcon: ({ focused, color, size }) => {
+            tabBarIcon: ({ focused: _focused, color, size }) => {
               const IconComponent = iconMap[tab.icon as keyof typeof iconMap] || Calculator;
               return <IconComponent size={size} color={color} />;
             },

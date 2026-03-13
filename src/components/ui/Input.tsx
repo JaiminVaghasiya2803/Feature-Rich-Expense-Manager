@@ -53,7 +53,9 @@ const Input: React.FC<InputProps> = ({
         friction: 10,
       }).start();
     }
-    props.onFocus && props.onFocus(e);
+    if (props.onFocus) {
+      props.onFocus(e);
+    }
   };
 
   const handleBlur = (e: any) => {
@@ -72,7 +74,9 @@ const Input: React.FC<InputProps> = ({
         friction: 10,
       }).start();
     }
-    props.onBlur && props.onBlur(e);
+    if (props.onBlur) {
+      props.onBlur(e);
+    }
   };
 
   const animatedBorderColor = borderColorAnim.interpolate({

@@ -13,6 +13,7 @@ import { AppProvider } from './contexts/AppContext';
 import { BillSplitProvider } from './contexts/BillSplitContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { CustomThemeProvider } from './contexts/CustomThemeContext';
+import { SecurityProvider } from './contexts/SecurityContext';
 import { SplashProvider } from './contexts/SplashContext';
 import AppContainer from './components/AppContainer';
 import FullScreenBackground from './components/FullScreenBackground';
@@ -49,18 +50,20 @@ const App = () => {
         <QueryProvider>
           <ThemeProvider>
             <CustomThemeProvider>
-              <StatusBarManager />
-              <FullScreenBackground>
-                <View style={styles.container}>
-                  <SplashProvider>
-                    <AppProvider>
-                      <BillSplitProvider>
-                        <AppContainer />
-                      </BillSplitProvider>
-                    </AppProvider>
-                  </SplashProvider>
-                </View>
-              </FullScreenBackground>
+              <SecurityProvider>
+                <StatusBarManager />
+                <FullScreenBackground>
+                  <View style={styles.container}>
+                    <SplashProvider>
+                      <AppProvider>
+                        <BillSplitProvider>
+                          <AppContainer />
+                        </BillSplitProvider>
+                      </AppProvider>
+                    </SplashProvider>
+                  </View>
+                </FullScreenBackground>
+              </SecurityProvider>
             </CustomThemeProvider>
           </ThemeProvider>
         </QueryProvider>
